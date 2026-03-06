@@ -1,0 +1,20 @@
+---
+- Jump:
+    - GitHub:
+        - abbr: GH
+          href: https://github.com/asharahmed/homelab
+    - Alerts:
+        - abbr: AL
+          href: https://alerts.home.aahmed.ca
+    - Grafana:
+        - abbr: GR
+          href: https://grafana.home.aahmed.ca
+    - Router:
+        - abbr: RT
+          href: https://router.home.aahmed.ca
+    - Tailscale:
+        - abbr: TS
+          href: https://login.tailscale.com/admin/machines
+    - Cloudflare:
+        - abbr: CF
+          href: https://dash.cloudflare.com

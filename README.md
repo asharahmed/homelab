@@ -147,6 +147,12 @@ It does **not** attempt to mirror every private implementation detail from the l
 - `logo.svg` — custom project mark
 - `.github/workflows/pages.yml` — GitHub Pages deployment workflow
 
+## Design Artifact
+
+A sanitized excerpt of the internal Homepage operations dashboard is included under [`artifacts/homepage-theme`](artifacts/homepage-theme).
+
+It shows the design system and information architecture behind the private dashboard without exposing internal URLs, credentials, or runtime config.
+
 ## Live Site
 
 **GitHub Pages:** https://asharahmed.github.io/homelab/

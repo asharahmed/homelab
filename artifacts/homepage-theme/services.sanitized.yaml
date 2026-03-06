@@ -1,0 +1,90 @@
+---
+- Command:
+    - Identity:
+        icon: shield.svg
+        href: https://identity.example.internal
+        description: Authentication and sessions.
+    - Secrets:
+        icon: key.svg
+        href: https://secrets.example.internal
+        description: Machine trust and secret storage.
+    - Files:
+        icon: files.svg
+        href: https://files.example.internal
+        description: Shared storage and access.
+    - Edge:
+        icon: edge.svg
+        href: https://edge.example.internal
+        description: Network and ingress policy.
+
+- Watch:
+    - Alerts:
+        icon: alerts.svg
+        href: https://alerts.example.internal
+        description: Active incidents.
+    - Platform:
+        icon: platform.svg
+        href: https://metrics.example.internal
+        description: Service and edge health.
+    - Host:
+        icon: host.svg
+        href: https://dashboards.example.internal
+        description: Resource pressure.
+
+- Systems:
+    - Dashboards:
+        icon: dashboards.svg
+        href: https://dashboards.example.internal
+        description: Metrics and operational views.
+    - Metrics:
+        icon: metrics.svg
+        href: https://metrics.example.internal
+        description: Rules and recording state.
+    - Checks:
+        icon: checks.svg
+        href: https://checks.example.internal
+        description: Synthetic monitoring.
+    - Response:
+        icon: response.svg
+        href: https://response.example.internal
+        description: Response console.
+    - Control:
+        icon: control.svg
+        href: https://control.example.internal
+        description: Virtualization and service control.
+
+- Media:
+    - Library:
+        icon: library.svg
+        href: https://media.example.internal
+        description: Playback and organization.
+    - Requests:
+        icon: requests.svg
+        href: https://requests.example.internal
+        description: Intake and approvals.
+    - Activity:
+        icon: activity.svg
+        href: https://activity.example.internal
+        description: Watch intelligence.
+    - Processing:
+        icon: processing.svg
+        href: https://processing.example.internal
+        description: Media workflows.
+
+- Security:
+    - SIEM:
+        icon: siem.svg
+        href: https://siem.example.internal
+        description: Detection and telemetry.
+    - Notifications:
+        icon: notifications.svg
+        href: https://notify.example.internal
+        description: Event delivery.
+    - AI Workspace:
+        icon: ai.svg
+        href: https://ai.example.internal
+        description: Local model workspace.
+    - Home Automation:
+        icon: home.svg
+        href: https://home.example.internal
+        description: Device bridge and automation.

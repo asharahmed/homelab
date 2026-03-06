@@ -1,0 +1,16 @@
+---
+- logo:
+    icon: /images/local/ashar-command.svg
+    href: https://home.aahmed.ca
+    target: _self
+- greeting:
+    text_size: 3xl
+    text: Ashar Command
+- search:
+    provider: duckduckgo
+    target: _blank
+- datetime:
+    text_size: lg
+    format:
+      dateStyle: full
+      timeStyle: short

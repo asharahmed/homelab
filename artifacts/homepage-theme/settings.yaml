@@ -1,0 +1,39 @@
+---
+title: Ashar Command
+description: Homelab access surface
+favicon: /images/local/ashar-command.svg
+background:
+  image: /images/local/ashar-grid.svg
+  opacity: 12
+  saturate: 38
+  brightness: 26
+cardBlur: sm
+theme: dark
+color: zinc
+iconStyle: theme
+headerStyle: clean
+statusStyle: dot
+fullWidth: true
+useEqualHeights: false
+maxGroupColumns: 5
+bookmarksStyle: icons
+layout:
+  Jump:
+    style: row
+    columns: 6
+    header: false
+  Command:
+    style: row
+    columns: 4
+  Watch:
+    style: row
+    columns: 3
+  Systems:
+    style: row
+    columns: 5
+  Media:
+    style: row
+    columns: 4
+  Security:
+    style: row
+    columns: 5
