@@ -1,0 +1,25 @@
+domains:
+  - name: ntfy.aahmed.ca
+    type: A
+    value: 203.0.113.10
+    proxied: false
+    managed_by_terraform: true
+    comment: public notifications endpoint
+  - name: wazuh.aahmed.ca
+    type: A
+    value: 203.0.113.10
+    proxied: false
+    managed_by_terraform: true
+    comment: public Wazuh dashboard endpoint
+  - name: homefiles.aahmed.ca
+    type: A
+    value: 203.0.113.10
+    proxied: false
+    managed_by_terraform: true
+    comment: public homefiles endpoint
+  - name: secrets.home.aahmed.ca
+    type: CNAME
+    value: host.tailnet.example.ts.net
+    proxied: false
+    managed_by_terraform: false
+    comment: management-only Infisical hostname via split DNS / mesh

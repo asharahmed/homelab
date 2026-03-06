@@ -1,0 +1,104 @@
+{
+  "id": null,
+  "uid": "system-health",
+  "title": "System Health",
+  "tags": ["homelab"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 2,
+  "refresh": "30s",
+  "panels": [
+    { "type": "stat", "title": "WAN HTTPS (home.aahmed.ca)", "id": 1, "datasource": "Prometheus",
+      "targets": [ { "expr": "probe_success{instance=\"https://home.aahmed.ca\"}", "refId": "A" } ],
+      "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": 0 }, { "color": "green", "value": 1 } ] } },
+
+    { "type": "stat", "title": "DNS (NextDNS DoH)", "id": 2, "datasource": "Prometheus",
+      "targets": [ { "expr": "probe_success{instance=\"https://dns.nextdns.io\"}", "refId": "A" } ],
+      "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": 0 }, { "color": "green", "value": 1 } ] } },
+
+    { "type": "stat", "title": "TLS Expiry (home.aahmed.ca, days)", "id": 3, "datasource": "Prometheus",
+      "targets": [ { "expr": "(probe_ssl_earliest_cert_expiry{instance=\"https://home.aahmed.ca\"}-time())/86400", "refId": "A" } ],
+      "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": 7 }, { "color": "yellow", "value": 14 }, { "color": "green", "value": 21 } ] } },
+
+    { "type": "gauge", "title": "CPU Usage (host)", "id": 4, "datasource": "Prometheus",
+      "targets": [ { "expr": "100 * (1 - avg by (instance) (rate(windows_cpu_time_total{mode=\"idle\"}[5m])))", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100,
+        "thresholds": { "mode": "percentage", "steps": [ { "color": "green", "value": 0 }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 } ] } } } },
+
+    { "type": "gauge", "title": "Memory Usage (host)", "id": 5, "datasource": "Prometheus",
+      "targets": [ { "expr": "(1 - (windows_os_physical_memory_free_bytes / windows_cs_physical_memory_bytes)) * 100", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100,
+        "thresholds": { "mode": "percentage", "steps": [ { "color": "green", "value": 0 }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 } ] } } } },
+
+    { "type": "bargauge", "title": "Disk Usage (top 6)", "id": 6, "datasource": "Prometheus",
+      "targets": [ { "expr": "topk(6, (1 - windows_logical_disk_free_bytes / windows_logical_disk_size_bytes) * 100)", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "unit": "percent", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 } ] } } } },
+
+    { "type": "timeseries", "title": "Container CPU (top 5)", "id": 7, "datasource": "Prometheus",
+      "targets": [ { "expr": "topk(5, rate(container_cpu_usage_seconds_total[5m]))", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "unit": "percent" } } },
+
+    { "type": "bargauge", "title": "Container Restarts (10m)", "id": 8, "datasource": "Prometheus",
+      "targets": [ { "expr": "changes(container_last_seen[10m])", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "unit": "none" } } },
+
+    { "type": "table", "title": "Active Alerts", "id": 9, "datasource": "Prometheus",
+      "targets": [ { "expr": "ALERTS{alertstate=\"firing\"}", "refId": "A" } ],
+      "transformations": [ { "id": "labelsToFields" } ],
+      "options": { "showHeader": true } },
+
+    { "type": "stat", "title": "Firing Alerts Count", "id": 10, "datasource": "Prometheus",
+      "targets": [ { "expr": "sum(ALERTS{alertstate=\"firing\"})", "refId": "A" } ] },
+
+    { "type": "stat", "title": "Uptime Kuma Up Monitors", "id": 11, "datasource": "Prometheus",
+      "targets": [ { "expr": "count(monitor_status == 1)", "refId": "A" } ] },
+
+    { "type": "stat", "title": "WAN Latency (ms)", "id": 12, "datasource": "Prometheus",
+      "targets": [ { "expr": "probe_duration_seconds{instance=\"https://home.aahmed.ca\"} * 1000", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "unit": "ms" } } },
+
+    { "type": "logs", "title": "Windows Event Logs (live)", "id": 13, "datasource": "Loki",
+      "targets": [ { "expr": "{job=~\"windows-events-.*\"}", "refId": "A" } ],
+      "options": { "showLabels": true, "wrapLogMessage": true } },
+
+    { "type": "stat", "title": "Backup Freshness (placeholder)", "id": 14, "datasource": "Prometheus",
+      "targets": [ { "expr": "0", "refId": "A" } ],
+      "description": "Wire to backup timestamp metric when backups go live." },
+
+    { "type": "stat", "title": "DNS Latency (avg 5m)", "id": 15, "datasource": "Prometheus",
+      "targets": [ { "expr": "avg_over_time(probe_duration_seconds{job=\"blackbox-dns\"}[5m]) * 1000", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "unit": "ms" } } },
+
+    { "type": "stat", "title": "TLS Min Days (key services)", "id": 16, "datasource": "Prometheus",
+      "targets": [ { "expr": "min((probe_ssl_earliest_cert_expiry{job=\"blackbox-tls\"}-time())/86400)", "refId": "A" } ],
+      "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": 7 }, { "color": "yellow", "value": 14 }, { "color": "green", "value": 21 } ] } },
+
+    { "type": "stat", "title": "WAN Packet Loss (5m)", "id": 17, "datasource": "Prometheus",
+      "targets": [ { "expr": "100 * (1 - avg_over_time(probe_success{job=\"blackbox-icmp\"}[5m]))", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "unit": "percent", "decimals": 1 } },
+      "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 5 } ] } },
+
+    { "type": "stat", "title": "Auth Failures (10m)", "id": 18, "datasource": "Prometheus",
+      "targets": [ { "expr": "sum(increase(windows_eventlog_security_total{event_id=4625}[10m]))", "refId": "A" } ],
+      "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "yellow", "value": 5 }, { "color": "red", "value": 10 } ] } },
+
+    { "type": "stat", "title": "Syslog Events (10m)", "id": 19, "datasource": "Loki",
+      "targets": [ { "expr": "sum by () (count_over_time({job=\"syslog\"}[10m]))", "refId": "A" } ] },
+
+    { "type": "stat", "title": "SNMP Targets Up", "id": 20, "datasource": "Prometheus",
+      "targets": [ { "expr": "sum(up{job=\"snmp\"})", "refId": "A" } ],
+      "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": 0 }, { "color": "green", "value": 1 } ] } },
+
+    { "type": "stat", "title": "Host Summary", "id": 21, "datasource": "Prometheus",
+      "targets": [
+        { "expr": "100 * (1 - avg by (instance) (rate(windows_cpu_time_total{mode=\"idle\"}[5m])))", "refId": "A", "legendFormat": "CPU" },
+        { "expr": "(1 - (windows_os_physical_memory_free_bytes / windows_cs_physical_memory_bytes)) * 100", "refId": "B", "legendFormat": "Memory" },
+        { "expr": "max((1 - windows_logical_disk_free_bytes / windows_logical_disk_size_bytes) * 100)", "refId": "C", "legendFormat": "Disk (max)" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100,
+        "thresholds": { "mode": "percentage", "steps": [ { "color": "green", "value": 0 }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 } ] } } },
+      "options": { "reduceOptions": { "values": false, "calcs": [ "lastNotNull" ], "fields": "" }, "orientation": "horizontal", "textMode": "auto", "colorMode": "value", "graphMode": "none", "justifyMode": "auto" },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 20 } }
+  ],
+  "templating": { "list": [] }
+}

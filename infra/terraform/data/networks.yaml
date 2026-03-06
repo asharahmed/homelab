@@ -1,0 +1,29 @@
+zones:
+  - name: management
+    description: admin workstations and infrastructure UIs
+  - name: servers
+    description: application and support services
+  - name: trusted-clients
+    description: user-controlled clients
+  - name: iot
+    description: low-trust smart devices
+  - name: guest
+    description: internet-only guest clients
+  - name: tailscale
+    description: remote admin access over the mesh
+
+trusted_sources:
+  syslog:
+    - 192.168.1.1
+    - 100.64.0.10
+  management:
+    - 192.168.1.0/24
+    - 100.64.0.0/10
+
+tailscale_grants:
+  - src:
+      - group:admins
+    dst:
+      - secrets.home.aahmed.ca:443
+      - wazuh.home.aahmed.ca:443
+    note: management surfaces over mesh

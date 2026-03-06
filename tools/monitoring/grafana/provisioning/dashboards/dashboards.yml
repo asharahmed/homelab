@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: System Health
+    orgId: 1
+    folder: System Health
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/system-health

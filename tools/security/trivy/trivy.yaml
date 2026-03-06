@@ -1,0 +1,17 @@
+timeout: 10m
+format: table
+severity:
+  - HIGH
+  - CRITICAL
+ignore-unfixed: true
+exit-code: 1
+skip-dirs:
+  - .git
+  - .tmp
+  - node_modules
+  - generated
+  - runtime-secrets
+skip-files:
+  - .env
+  - .env.bootstrap.local
+

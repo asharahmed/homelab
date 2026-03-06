@@ -1,0 +1,36 @@
+{{ define "telegram.message" -}}
+{{- $status := .Status | toUpper -}}
+{{- $alert := .CommonLabels.alertname -}}
+{{- $sev := .CommonLabels.severity -}}
+{{- $job := .CommonLabels.job -}}
+{{- $inst := .CommonLabels.instance -}}
+{{- if $sev }}{{ $status }}: {{ $alert }} ({{ $sev }}){{ else }}{{ $status }}: {{ $alert }}{{ end }}
+{{- if or $job $inst }}
+{{- if $job }}
+Job: {{ $job }}{{- end }}{{- if and $job $inst }} • {{- end }}{{- if $inst }}Instance: {{ $inst }}{{- end }}{{- end }}
+
+{{- $hasName := false -}}
+{{- range .Alerts }}{{- if .Labels.name }}{{- $hasName = true -}}{{- end }}{{- end }}
+
+{{- $max := 3 -}}
+{{- range $i, $a := .Alerts }}
+{{- if lt $i $max }}
+{{- if $hasName }}
+- {{ $a.Labels.name }}
+{{- else if $a.Annotations.summary }}
+- {{ $a.Annotations.summary }}
+{{- else if $a.Annotations.description }}
+- {{ $a.Annotations.description }}
+{{- else }}
+- Alert active
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if gt (len .Alerts) $max }}
+(+more)
+{{- end }}
+
+{{- if .ExternalURL }}
+Alertmanager: {{ .ExternalURL }}
+{{- end }}
+{{- end }}

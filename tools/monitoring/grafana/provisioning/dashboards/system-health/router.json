@@ -1,0 +1,280 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "type": "stat",
+      "title": "CPU Load (1m)",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 2 },
+              { "color": "red", "value": 4 }
+            ]
+          },
+          "unit": "none",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "options": { "graphMode": "area", "colorMode": "background", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [{ "expr": "node_load1{job=\"router\"}", "legendFormat": "Load 1m" }]
+    },
+    {
+      "type": "stat",
+      "title": "Memory Used",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "percent",
+          "decimals": 1,
+          "max": 100,
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": { "graphMode": "area", "colorMode": "background", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [{ "expr": "100 - (node_memory_available_bytes{job=\"router\"} / node_memory_total_bytes{job=\"router\"} * 100)", "legendFormat": "Used %" }]
+    },
+    {
+      "type": "stat",
+      "title": "Max Temperature",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "unit": "celsius",
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": { "graphMode": "area", "colorMode": "background", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [{ "expr": "max(node_thermal_zone_temp{job=\"router\"})", "legendFormat": "Max Temp" }]
+    },
+    {
+      "type": "stat",
+      "title": "Connected Clients",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": { "graphMode": "none", "colorMode": "background", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [{ "expr": "node_arp_entries{job=\"router\"}", "legendFormat": "Clients" }]
+    },
+    {
+      "type": "stat",
+      "title": "TCP Connections",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "purple", "value": null }
+            ]
+          },
+          "unit": "none",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": { "graphMode": "area", "colorMode": "background", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [{ "expr": "node_netstat_tcp_established{job=\"router\"}", "legendFormat": "Established" }]
+    },
+    {
+      "type": "stat",
+      "title": "Uptime",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          },
+          "unit": "dtdurations",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": { "graphMode": "none", "colorMode": "background", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [{ "expr": "time() - node_boot_time_seconds{job=\"router\"}", "legendFormat": "Uptime" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU Load Average",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "fillOpacity": 15, "lineWidth": 2 },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "targets": [
+        { "expr": "node_load1{job=\"router\"}", "legendFormat": "1m" },
+        { "expr": "node_load5{job=\"router\"}", "legendFormat": "5m" },
+        { "expr": "node_load15{job=\"router\"}", "legendFormat": "15m" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Usage",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "fillOpacity": 30, "lineWidth": 1, "stacking": { "mode": "normal" } },
+          "unit": "bytes"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Used" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Buffers" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Cached" }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Free" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }] }
+        ]
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "targets": [
+        { "expr": "node_memory_total_bytes{job=\"router\"} - node_memory_free_bytes{job=\"router\"} - node_memory_buffers_bytes{job=\"router\"} - node_memory_cached_bytes{job=\"router\"}", "legendFormat": "Used" },
+        { "expr": "node_memory_buffers_bytes{job=\"router\"}", "legendFormat": "Buffers" },
+        { "expr": "node_memory_cached_bytes{job=\"router\"}", "legendFormat": "Cached" },
+        { "expr": "node_memory_free_bytes{job=\"router\"}", "legendFormat": "Free" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Thermal Zones",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "fillOpacity": 10, "lineWidth": 2 },
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          },
+          "color": { "mode": "continuous-GrYlRd" }
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "targets": [{ "expr": "node_thermal_zone_temp{job=\"router\"}", "legendFormat": "{{zone}}" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "DNS Queries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "fillOpacity": 15, "lineWidth": 2 },
+          "unit": "none"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Blocked" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Total" }, "properties": [{ "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }] }
+        ]
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "targets": [
+        { "expr": "adguard_dns_queries_total{job=\"router\"}", "legendFormat": "Total" },
+        { "expr": "adguard_dns_blocked_total{job=\"router\"}", "legendFormat": "Blocked" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Network Traffic — WAN (eth0)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "fillOpacity": 15, "lineWidth": 2 },
+          "unit": "Bps"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "TX" }, "properties": [{ "id": "custom.transform", "value": "negative-Y" }] }
+        ]
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "targets": [
+        { "expr": "rate(node_network_receive_bytes_total{job=\"router\",device=\"eth0\"}[5m])", "legendFormat": "RX" },
+        { "expr": "rate(node_network_transmit_bytes_total{job=\"router\",device=\"eth0\"}[5m])", "legendFormat": "TX" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Network Traffic — LAN + WiFi",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "fillOpacity": 15, "lineWidth": 2 },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } },
+      "targets": [
+        { "expr": "rate(node_network_receive_bytes_total{job=\"router\",device=\"br-lan\"}[5m])", "legendFormat": "LAN RX" },
+        { "expr": "rate(node_network_transmit_bytes_total{job=\"router\",device=\"br-lan\"}[5m])", "legendFormat": "LAN TX" },
+        { "expr": "rate(node_network_receive_bytes_total{job=\"router\",device=\"wlan0\"}[5m])", "legendFormat": "WiFi 2.4G RX" },
+        { "expr": "rate(node_network_transmit_bytes_total{job=\"router\",device=\"wlan0\"}[5m])", "legendFormat": "WiFi 2.4G TX" },
+        { "expr": "rate(node_network_receive_bytes_total{job=\"router\",device=\"wlan1\"}[5m])", "legendFormat": "WiFi 5G RX" },
+        { "expr": "rate(node_network_transmit_bytes_total{job=\"router\",device=\"wlan1\"}[5m])", "legendFormat": "WiFi 5G TX" }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["router", "network", "infrastructure"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Router — GL.iNet Flint 2",
+  "uid": "router-glinet",
+  "version": 1
+}

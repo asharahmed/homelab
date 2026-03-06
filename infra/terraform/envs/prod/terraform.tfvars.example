@@ -1,0 +1,3 @@
+cloudflare_zone_name = "aahmed.ca"
+enable_cloudflare    = false
+enable_tailscale     = false

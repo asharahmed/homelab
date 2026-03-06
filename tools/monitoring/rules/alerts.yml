@@ -1,0 +1,220 @@
+groups:
+  - name: core-health
+    rules:
+      - alert: InstanceDown
+        expr: up{job=~"prometheus|cadvisor|windows-exporter|snmp|blackbox-exporter|crowdsec|alertmanager|loki|promtail"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} down"
+          description: "{{ $labels.job }} on {{ $labels.instance }} has been unreachable for 2 minutes."
+
+      - alert: HighCPU
+        expr: 100 * (1 - avg by (instance) (rate(windows_cpu_time_total{mode="idle"}[5m]))) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage >85% for 5m."
+
+      - alert: HighMemory
+        expr: (1 - (windows_os_physical_memory_free_bytes / windows_cs_physical_memory_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage >85% for 5m."
+
+      - alert: LowDisk
+        expr: (1 - (windows_logical_disk_free_bytes{job!="windows-exporter"} / windows_logical_disk_size_bytes{job!="windows-exporter"})) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space {{ $labels.volume }} on {{ $labels.instance }}"
+          description: "Disk usage >85% for 10m."
+
+      - alert: ContainerRestartBurst
+        expr: changes(container_start_time_seconds[10m]) > 3
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container restart burst"
+          description: "{{ $labels.name }} restarted more than 3 times in 10m."
+
+  - name: network-probes
+    rules:
+      - alert: HTTPSProbeFailed
+        expr: probe_success{job="blackbox-wan"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HTTPS probe failed {{ $labels.instance }}"
+          description: "Blackbox TCP 443 probe to {{ $labels.instance }} is failing."
+
+      - alert: DNSProbeFailed
+        expr: probe_success{job="blackbox-dns"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DNS resolver failing {{ $labels.instance }}"
+          description: "Blackbox DNS probe to resolver {{ $labels.instance }} failed."
+
+      - alert: ICMPProbeFailed
+        expr: probe_success{job="blackbox-icmp"} == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "ICMP probe failed {{ $labels.instance }}"
+          description: "Ping probe to {{ $labels.instance }} is failing."
+
+      - alert: CertExpirySoon
+        expr: (probe_ssl_earliest_cert_expiry{job="blackbox-tls"} - time()) < 14 * 24 * 3600
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Certificate expiring soon for {{ $labels.instance }}"
+          description: "TLS certificate for {{ $labels.instance }} expires in less than 14 days."
+
+      - alert: WazuhEndpointFailed
+        expr: probe_success{job="wazuh-endpoints"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Wazuh endpoint failed {{ $labels.instance }}"
+          description: "Wazuh health endpoint {{ $labels.instance }} has been failing for 2 minutes."
+
+  - name: compliance
+    rules:
+      - alert: HighContainerRestarts
+        expr: changes(container_start_time_seconds[1h]) > 3
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High container restarts"
+          description: "{{ $labels.name }} restarted more than 3 times in the last hour."
+
+      - alert: BackupTooOld
+        expr: time() - max by (job) (backup_last_success_timestamp_seconds) > 36 * 3600
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backup too old"
+          description: "Latest backup for {{ $labels.job }} older than 36h."
+
+      - alert: ExcessiveAuthFailures
+        expr: sum by (host) (increase(windows_eventlog_security_total{event_id="4625"}[10m])) > 10
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Auth failures on {{ $labels.host }}"
+          description: "More than 10 failed logons in 10 minutes."
+
+  - name: crowdsec
+    rules:
+      - alert: CrowdSecDown
+        expr: up{job="crowdsec"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CrowdSec LAPI unreachable"
+          description: "CrowdSec metrics endpoint has been down for 2 minutes — bouncer decisions may be stale."
+
+      - alert: CrowdSecHighBanRate
+        expr: rate(cs_active_decisions[5m]) * 60 > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CrowdSec ban rate"
+          description: "More than 10 new ban decisions per minute for the last 5 minutes."
+
+  - name: watchdog
+    rules:
+      - alert: Watchdog
+        expr: vector(1)
+        labels:
+          severity: info
+        annotations:
+          summary: "Watchdog"
+          description: "Deadman alert to verify the Prometheus to Alertmanager notification pipeline."
+
+  - name: media
+    rules:
+      - alert: MediaDiskLowMovies
+        expr: radarr_rootfolder_freespace_bytes < 50 * 1024 * 1024 * 1024
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space for movies"
+          description: "Free space on the movies root is below 50 GB."
+
+      - alert: MediaDiskLowTV
+        expr: sonarr_rootfolder_freespace_bytes < 50 * 1024 * 1024 * 1024
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space for TV"
+          description: "Free space on the TV root is below 50 GB."
+
+      - alert: ArrHealthErrors
+        expr: (radarr_system_health_issues{type="error"} > 0) or (sonarr_system_health_issues{type="error"} > 0)
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Arr health errors"
+          description: "Radarr/Sonarr reports health errors that may block imports."
+
+  - name: router
+    rules:
+      - alert: RouterReboot
+        expr: sysUpTime{job="snmp"} < 60000
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Router recently rebooted"
+          description: "Router sysUpTime is {{ $value | humanizeDuration }} — likely a recent reboot."
+
+      - alert: TailscaleTunnelDown
+        expr: probe_success{job="blackbox-tailscale"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Tailscale tunnel to router is down"
+          description: "TCP probe to router via Tailscale ({{ $labels.instance }}) has been failing for 2 minutes."
+
+      - alert: RouterHighLatency
+        expr: probe_duration_seconds{job="blackbox-icmp",instance="100.64.0.10"} > 0.15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency to router via Tailscale"
+          description: "ICMP latency to router via Tailscale is {{ $value | humanizeDuration }} (>150ms for 5m)."
+
+      - alert: RouterInterfaceErrors
+        expr: rate(ifInErrors{job="snmp",ifDescr!~"wifi.*|wlan.*|mld.*"}[5m]) + rate(ifOutErrors{job="snmp",ifDescr!~"wifi.*|wlan.*|mld.*"}[5m]) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Router interface errors on {{ $labels.ifDescr }}"
+          description: "Interface {{ $labels.ifDescr }} is seeing >1 error/sec for 5 minutes."

@@ -166,3 +166,17 @@ It shows the design system and information architecture behind the private dashb
 <p align="center">
   Built as a real operating environment, documented as a public systems portfolio.
 </p>
+
+## Repo Mirror
+
+This public repository also includes a sanitized subset of the private homelab repository:
+- Terraform/OpenTofu scaffolding for external DNS and infra metadata
+- secrets-management bootstrap and render scripts for Infisical
+- security scanning workflow with Trivy and Renovate
+- monitoring and Grafana examples with download-specific services removed
+
+Excluded from the public mirror:
+- live runtime configs
+- secrets and generated state
+- internal-only compose/runtime definitions
+- download-specific service wiring

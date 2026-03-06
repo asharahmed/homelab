@@ -1,0 +1,33 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "timezone": "America/New_York",
+  "docker-compose": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["docker-compose", "dockerfile"],
+      "groupName": "monitoring stack",
+      "matchPackagePatterns": ["prometheus", "grafana", "loki", "promtail", "blackbox", "alertmanager"]
+    },
+    {
+      "matchManagers": ["docker-compose", "dockerfile"],
+      "groupName": "security stack",
+      "matchPackagePatterns": ["wazuh", "crowdsec", "infisical", "postgres", "redis"]
+    },
+    {
+      "matchManagers": ["docker-compose", "dockerfile"],
+      "groupName": "media stack",
+      "matchPackagePatterns": ["plex", "radarr", "sonarr", "readarr", "bazarr", "maintainerr"]
+    }
+  ],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 6,
+  "automerge": false
+}

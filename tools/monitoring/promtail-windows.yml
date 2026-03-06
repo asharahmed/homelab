@@ -1,0 +1,43 @@
+server:
+  http_listen_port: 9081
+
+positions:
+  filename: C:\\ProgramData\\promtail\\positions.yaml
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: windows-events-application
+    windows_events:
+      eventlog_name: Application
+      use_incoming_timestamp: true
+      bookmark_path: C:\\Windows\\Temp\\promtail-application.bmk
+    relabel_configs:
+      - target_label: host
+        replacement: windows
+      - target_label: source
+        replacement: eventlog
+
+  - job_name: windows-events-system
+    windows_events:
+      eventlog_name: System
+      use_incoming_timestamp: true
+      bookmark_path: C:\\Windows\\Temp\\promtail-system.bmk
+    relabel_configs:
+      - target_label: host
+        replacement: windows
+      - target_label: source
+        replacement: eventlog
+
+  # Security log can require SeSecurityPrivilege; enable later when service permissions allow.
+  # - job_name: windows-events-security
+  #   windows_events:
+  #     eventlog_name: Security
+  #     use_incoming_timestamp: true
+  #     bookmark_path: C:\\Windows\\Temp\\promtail-security.bmk
+  #   relabel_configs:
+  #     - target_label: host
+  #       replacement: windows
+  #     - target_label: source
+  #       replacement: eventlog

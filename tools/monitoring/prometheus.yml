@@ -1,0 +1,285 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: [ "alertmanager:9093" ]
+
+rule_files:
+  - /etc/prometheus/rules/alerts.yml
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: [ "prometheus:9090" ]
+
+  - job_name: cadvisor
+    static_configs:
+      - targets: [ "cadvisor:8080" ]
+
+  - job_name: windows-exporter
+    static_configs:
+      - targets: [ "host.docker.internal:9182" ]
+
+  - job_name: uptime-kuma
+    metrics_path: /metrics
+    static_configs:
+      - targets: [ "uptime-kuma:3001" ]
+
+  - job_name: exportarr-sonarr
+    static_configs:
+      - targets: [ "exportarr-sonarr:9707" ]
+
+  - job_name: exportarr-radarr
+    static_configs:
+      - targets: [ "exportarr-radarr:9708" ]
+
+  - job_name: exportarr-readarr
+    static_configs:
+      - targets: [ "exportarr-readarr:9710" ]
+
+  - job_name: plex-exporter
+    static_configs:
+      - targets: [ "plex-exporter:9713" ]
+
+  - job_name: fileflows
+    metrics_path: /probe
+    params:
+      module: [fileflows]
+      target: [http://fileflows:5000/api/status]
+    static_configs:
+      - targets: [ "json-exporter:7979" ]
+
+  - job_name: crowdsec
+    static_configs:
+      - targets: [ "crowdsec:6060" ]
+
+  - job_name: alertmanager
+    static_configs:
+      - targets: [ "alertmanager:9093" ]
+
+  - job_name: loki
+    static_configs:
+      - targets: [ "loki:3100" ]
+
+  - job_name: promtail
+    static_configs:
+      - targets: [ "promtail:9080" ]
+
+  - job_name: blackbox-exporter
+    static_configs:
+      - targets: [ "blackbox-exporter:9115" ]
+
+  - job_name: wazuh-endpoints
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://wazuh.aahmed.ca/healthz
+          - https://wazuh.home.aahmed.ca/healthz
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-wan
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+      - targets:
+          - 1.1.1.1:443
+          - dns.nextdns.io:443
+          - cloudflare.com:443
+          - adguard.home.aahmed.ca:443
+          - grafana.home.aahmed.ca:443
+          - alerts.home.aahmed.ca:443
+          - auth.home.aahmed.ca:443
+          - bazarr.home.aahmed.ca:443
+          - bridge.home.aahmed.ca:443
+          - fileflows.home.aahmed.ca:443
+          - files.home.aahmed.ca:443
+          - helix.home.aahmed.ca:443
+          - home.aahmed.ca:443
+          - homefiles.aahmed.ca:443
+          - maintainerr.home.aahmed.ca:443
+          - ntfy.aahmed.ca:443
+          - openwebui.home.aahmed.ca:443
+          - overseerr.home.aahmed.ca:443
+          - plex.home.aahmed.ca:443
+          - prometheus.home.aahmed.ca:443
+          - radarr.home.aahmed.ca:443
+          - readarr.home.aahmed.ca:443
+          - requestrr.home.aahmed.ca:443
+          - router.home.aahmed.ca:443
+          - shuffle.home.aahmed.ca:443
+          - sonarr.home.aahmed.ca:443
+          - tautulli.home.aahmed.ca:443
+          - uptime.home.aahmed.ca:443
+          - velociraptor.home.aahmed.ca:443
+          - vm.home.aahmed.ca:443
+          - vmctl.home.aahmed.ca:443
+          - wazuh.aahmed.ca:443
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-dns
+    metrics_path: /probe
+    params:
+      module: [dns]
+    static_configs:
+      - targets:
+          - 1.1.1.1
+          - 9.9.9.9
+          - 100.100.100.100   # Tailscale DNS
+          - 192.168.1.1        # LAN resolver
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-tls
+    metrics_path: /probe
+    params:
+      module: [https_cert]
+    static_configs:
+      - targets:
+          - https://cloudflare.com
+          - https://adguard.home.aahmed.ca
+          - https://alerts.home.aahmed.ca
+          - https://auth.home.aahmed.ca
+          - https://bazarr.home.aahmed.ca
+          - https://bridge.home.aahmed.ca
+          - https://fileflows.home.aahmed.ca
+          - https://files.home.aahmed.ca
+          - https://grafana.home.aahmed.ca
+          - https://helix.home.aahmed.ca
+          - https://home.aahmed.ca
+          - https://homefiles.aahmed.ca
+          - https://maintainerr.home.aahmed.ca
+          - https://ntfy.aahmed.ca
+          - https://openwebui.home.aahmed.ca
+          - https://overseerr.home.aahmed.ca
+          - https://plex.home.aahmed.ca
+          - https://prometheus.home.aahmed.ca
+          - https://radarr.home.aahmed.ca
+          - https://readarr.home.aahmed.ca
+          - https://requestrr.home.aahmed.ca
+          - https://router.home.aahmed.ca
+          - https://shuffle.home.aahmed.ca
+          - https://sonarr.home.aahmed.ca
+          - https://tautulli.home.aahmed.ca
+          - https://uptime.home.aahmed.ca
+          - https://velociraptor.home.aahmed.ca
+          - https://vm.home.aahmed.ca
+          - https://vmctl.home.aahmed.ca
+          - https://wazuh.aahmed.ca
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-tls-auth
+    metrics_path: /probe
+    params:
+      module: [https_cert_auth]
+    static_configs:
+      - targets:
+          - https://grafana.home.aahmed.ca
+          - https://alerts.home.aahmed.ca
+          - https://prometheus.home.aahmed.ca
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-icmp
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    static_configs:
+      - targets:
+          - 1.1.1.1
+          - 8.8.8.8
+          - 192.168.1.1
+          - 100.64.0.10     # Router via Tailscale
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: router
+    metrics_path: /cgi-bin/metrics
+    params:
+      token: [ "${ROUTER_METRICS_TOKEN}" ]
+    static_configs:
+      - targets: [ "192.168.1.1:80" ]
+
+  - job_name: snmp
+    metrics_path: /snmp
+    params:
+      module: [default]
+      auth: [router_v2]
+    static_configs:
+      - targets:
+          - 192.168.1.1
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp-exporter:9116
+
+  - job_name: blackbox-tailscale
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+      - targets:
+          - 100.64.0.10:80    # Router web UI via Tailscale
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-router-http
+    metrics_path: /probe
+    params:
+      module: [http_router]
+    static_configs:
+      - targets:
+          - http://192.168.1.1
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

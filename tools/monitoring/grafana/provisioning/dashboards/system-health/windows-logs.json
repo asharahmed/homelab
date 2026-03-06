@@ -1,0 +1,63 @@
+{
+  "title": "Windows Logs (Loki)",
+  "tags": ["homelab", "logs"],
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "panels": [
+    {
+      "type": "logs",
+      "title": "All Windows Event Logs",
+      "id": 1,
+      "datasource": "Loki",
+      "targets": [
+        {
+          "expr": "{job=~\"windows-events-.*\"}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "showLabels": true,
+        "dedupStrategy": "none",
+        "wrapLogMessage": true
+      }
+    },
+    {
+      "type": "logs",
+      "title": "Errors (last 1h)",
+      "id": 2,
+      "datasource": "Loki",
+      "targets": [
+        {
+          "expr": "{job=~\"windows-events-.*\"} |= \"error\"",
+          "refId": "A"
+        }
+      ],
+      "interval": "1h",
+      "options": {
+        "showLabels": true,
+        "wrapLogMessage": true
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Error rate (per 5m)",
+      "id": 3,
+      "datasource": "Loki",
+      "targets": [
+        {
+          "expr": "sum(rate({job=~\"windows-events-.*\"} |= \"error\" [5m]))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        }
+      }
+    }
+  ],
+  "templating": {
+    "list": []
+  }
+}

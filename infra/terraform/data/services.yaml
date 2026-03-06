@@ -1,0 +1,32 @@
+services:
+  - name: caddy
+    owner: platform
+    exposure: public
+    auth_mode: edge
+    domains:
+      - home.aahmed.ca
+  - name: ntfy
+    owner: platform
+    exposure: public
+    auth_mode: direct
+    domains:
+      - ntfy.aahmed.ca
+  - name: wazuh-dashboard
+    owner: security
+    exposure: public
+    auth_mode: authelia
+    domains:
+      - wazuh.aahmed.ca
+      - wazuh.home.aahmed.ca
+  - name: infisical
+    owner: platform
+    exposure: management-only
+    auth_mode: tailscale-or-lan
+    domains:
+      - secrets.home.aahmed.ca
+  - name: alertmanager
+    owner: monitoring
+    exposure: public
+    auth_mode: authelia
+    domains:
+      - alerts.home.aahmed.ca
