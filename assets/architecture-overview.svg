@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 920" role="img" aria-labelledby="title desc">
+  <title id="title">Homelab Architecture Overview</title>
+  <desc id="desc">Sanitized architecture diagram showing ingress, identity, observability, security, and infrastructure control layers.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d1015"/>
+      <stop offset="100%" stop-color="#0a0c10"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#171c23"/>
+      <stop offset="100%" stop-color="#11151b"/>
+    </linearGradient>
+    <linearGradient id="signal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d2a46a"/>
+      <stop offset="100%" stop-color="#9f7847"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#79b8b2"/>
+      <stop offset="100%" stop-color="#4b807b"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d47a72"/>
+      <stop offset="100%" stop-color="#995650"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c99557"/>
+    </marker>
+    <marker id="arrowTeal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#629d98"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b5665f"/>
+    </marker>
+    <style>
+      .label{font:600 15px 'IBM Plex Sans', 'Segoe UI', sans-serif; fill:#edf1f5; letter-spacing:.03em}
+      .muted{font:500 12px 'IBM Plex Sans', 'Segoe UI', sans-serif; fill:#9aa7b4; letter-spacing:.04em}
+      .tiny{font:600 11px 'IBM Plex Sans', 'Segoe UI', sans-serif; fill:#d2a46a; letter-spacing:.12em; text-transform:uppercase}
+      .title{font:700 34px 'IBM Plex Sans Condensed', 'Segoe UI', sans-serif; fill:#f3f5f7; letter-spacing:.05em}
+      .subtitle{font:500 14px 'IBM Plex Sans', 'Segoe UI', sans-serif; fill:#9aa7b4}
+      .panel{fill:url(#panel); stroke:#29313b; stroke-width:1.2; rx:18}
+      .zone{fill:none; stroke:#232a33; stroke-width:1.2; stroke-dasharray:5 7; rx:24}
+    </style>
+  </defs>
+
+  <rect width="1400" height="920" fill="url(#bg)"/>
+  <rect x="32" y="32" width="1336" height="856" rx="28" fill="none" stroke="#1f252d"/>
+
+  <text x="70" y="88" class="title">HOMELAB ARCHITECTURE OVERVIEW</text>
+  <text x="70" y="114" class="subtitle">Sanitized public view of ingress, identity, telemetry, and control-plane flow</text>
+
+  <rect x="68" y="154" width="1264" height="140" class="zone"/>
+  <text x="86" y="180" class="tiny">Ingress and Access</text>
+
+  <rect x="92" y="196" width="180" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="118" y="228" class="label">Internet</text>
+  <text x="118" y="248" class="muted">Public clients and WAN traffic</text>
+
+  <rect x="332" y="196" width="200" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="358" y="228" class="label">Flint 3 / Edge</text>
+  <text x="358" y="248" class="muted">Routing, firewall policy, segmentation</text>
+
+  <rect x="592" y="196" width="178" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="618" y="228" class="label">Caddy</text>
+  <text x="618" y="248" class="muted">TLS, routing, request logging</text>
+
+  <rect x="830" y="196" width="178" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="856" y="228" class="label">CrowdSec</text>
+  <text x="856" y="248" class="muted">Ingress decisions and bans</text>
+
+  <rect x="1068" y="196" width="178" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="1094" y="228" class="label">Authelia</text>
+  <text x="1094" y="248" class="muted">SSO, policy, session control</text>
+
+  <line x1="272" y1="233" x2="332" y2="233" stroke="#c99557" stroke-width="3" marker-end="url(#arrowAmber)"/>
+  <line x1="532" y1="233" x2="592" y2="233" stroke="#c99557" stroke-width="3" marker-end="url(#arrowAmber)"/>
+  <line x1="770" y1="233" x2="830" y2="233" stroke="#c99557" stroke-width="3" marker-end="url(#arrowAmber)"/>
+  <line x1="1008" y1="233" x2="1068" y2="233" stroke="#c99557" stroke-width="3" marker-end="url(#arrowAmber)"/>
+
+  <rect x="68" y="334" width="1264" height="192" class="zone"/>
+  <text x="86" y="360" class="tiny">Application and Operations Layer</text>
+
+  <rect x="96" y="382" width="242" height="118" class="panel" filter="url(#shadow)"/>
+  <text x="122" y="414" class="label">Operator Surfaces</text>
+  <text x="122" y="438" class="muted">Homepage</text>
+  <text x="122" y="460" class="muted">Grafana</text>
+  <text x="122" y="482" class="muted">Wazuh Dashboard</text>
+
+  <rect x="392" y="382" width="242" height="118" class="panel" filter="url(#shadow)"/>
+  <text x="418" y="414" class="label">Core Services</text>
+  <text x="418" y="438" class="muted">Plex, Files, Homebridge, ntfy</text>
+  <text x="418" y="460" class="muted">Readarr, Radarr, Sonarr, Bazarr</text>
+  <text x="418" y="482" class="muted">Representative user-facing services</text>
+
+  <rect x="688" y="382" width="242" height="118" class="panel" filter="url(#shadow)"/>
+  <text x="714" y="414" class="label">Platform Services</text>
+  <text x="714" y="438" class="muted">Infisical</text>
+  <text x="714" y="460" class="muted">Open WebUI / Ollama</text>
+  <text x="714" y="482" class="muted">Shared automation and control surfaces</text>
+
+  <rect x="984" y="382" width="294" height="118" class="panel" filter="url(#shadow)"/>
+  <text x="1010" y="414" class="label">Host Runtime</text>
+  <text x="1010" y="438" class="muted">Windows 11 + Docker Desktop + WSL2</text>
+  <text x="1010" y="460" class="muted">Single primary host, stateful workloads</text>
+  <text x="1010" y="482" class="muted">Compose-driven deployment model</text>
+
+  <line x1="1157" y1="270" x2="1157" y2="382" stroke="#c99557" stroke-width="3" marker-end="url(#arrowAmber)"/>
+  <line x1="681" y1="270" x2="681" y2="382" stroke="#c99557" stroke-width="3" marker-end="url(#arrowAmber)"/>
+
+  <rect x="68" y="566" width="604" height="278" class="zone"/>
+  <text x="86" y="592" class="tiny">Observability and Alerting</text>
+
+  <rect x="96" y="620" width="190" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="122" y="651" class="label">Prometheus</text>
+  <text x="122" y="672" class="muted">Scrapes metrics and evaluates rules</text>
+
+  <rect x="340" y="620" width="190" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="366" y="651" class="label">Loki</text>
+  <text x="366" y="672" class="muted">Centralized log storage and search</text>
+
+  <rect x="96" y="730" width="190" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="122" y="761" class="label">Alertmanager</text>
+  <text x="122" y="782" class="muted">Routes alerts to ntfy and Telegram</text>
+
+  <rect x="340" y="730" width="190" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="366" y="761" class="label">Promtail</text>
+  <text x="366" y="782" class="muted">Docker, file, and Windows log shipping</text>
+
+  <rect x="540" y="675" width="104" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="562" y="707" class="label">ntfy</text>
+  <text x="562" y="728" class="muted">Alerts</text>
+
+  <line x1="286" y1="657" x2="340" y2="657" stroke="#629d98" stroke-width="3" marker-end="url(#arrowTeal)"/>
+  <line x1="191" y1="694" x2="191" y2="730" stroke="#629d98" stroke-width="3" marker-end="url(#arrowTeal)"/>
+  <line x1="435" y1="694" x2="435" y2="730" stroke="#629d98" stroke-width="3" marker-end="url(#arrowTeal)"/>
+  <line x1="286" y1="767" x2="540" y2="712" stroke="#629d98" stroke-width="3" marker-end="url(#arrowTeal)"/>
+  <line x1="435" y1="730" x2="435" y2="694" stroke="#629d98" stroke-width="3" marker-end="url(#arrowTeal)"/>
+
+  <rect x="716" y="566" width="616" height="278" class="zone"/>
+  <text x="734" y="592" class="tiny">Security and Control Planes</text>
+
+  <rect x="746" y="620" width="210" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="772" y="651" class="label">Wazuh</text>
+  <text x="772" y="672" class="muted">SIEM, endpoint, custom detections</text>
+
+  <rect x="1012" y="620" width="210" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="1038" y="651" class="label">Velociraptor</text>
+  <text x="1038" y="672" class="muted">Endpoint investigation and hunting</text>
+
+  <rect x="746" y="730" width="210" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="772" y="761" class="label">Infisical</text>
+  <text x="772" y="782" class="muted">Secret source of truth</text>
+
+  <rect x="1012" y="730" width="210" height="74" class="panel" filter="url(#shadow)"/>
+  <text x="1038" y="761" class="label">OpenTofu / Terraform</text>
+  <text x="1038" y="782" class="muted">DNS and infra metadata control</text>
+
+  <line x1="851" y1="694" x2="851" y2="730" stroke="#b5665f" stroke-width="3" marker-end="url(#arrowRed)"/>
+  <line x1="956" y1="657" x2="1012" y2="657" stroke="#b5665f" stroke-width="3" marker-end="url(#arrowRed)"/>
+  <line x1="956" y1="767" x2="1012" y2="767" stroke="#b5665f" stroke-width="3" marker-end="url(#arrowRed)"/>
+
+  <path d="M 530 441 C 630 441, 670 657, 746 657" fill="none" stroke="#b5665f" stroke-width="3" marker-end="url(#arrowRed)"/>
+  <path d="M 530 461 C 620 461, 650 767, 746 767" fill="none" stroke="#b5665f" stroke-width="3" marker-end="url(#arrowRed)"/>
+  <path d="M 930 461 C 980 461, 1040 520, 1117 620" fill="none" stroke="#b5665f" stroke-width="3" marker-end="url(#arrowRed)"/>
+  <path d="M 930 438 C 1010 438, 1080 520, 1117 730" fill="none" stroke="#b5665f" stroke-width="3" marker-end="url(#arrowRed)"/>
+
+  <rect x="70" y="858" width="1260" height="1" fill="#222932"/>
+  <text x="70" y="886" class="subtitle">Public mirror intentionally omits live secrets, exact runtime wiring, and internal-only topology.</text>
+</svg>

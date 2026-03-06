@@ -70,21 +70,9 @@ The emphasis is on system design and operational discipline rather than service 
 
 ## Representative Architecture
 
-```text
-Internet
-  -> Caddy
-  -> CrowdSec / policy checks
-  -> Authelia
-  -> application
-```
+![Homelab architecture overview](assets/architecture-overview.svg)
 
-```text
-metrics -> Prometheus -> Grafana
-                    -> Alertmanager -> ntfy / Telegram
-
-logs -> Promtail -> Loki -> Grafana
-security telemetry -> Wazuh -> enrichment / response
-```
+The diagram reflects the public component model in this repository: edge enforcement and ingress, operator-facing services, observability, and separate security/control planes.
 
 ## Scope
 
