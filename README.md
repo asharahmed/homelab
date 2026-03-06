@@ -59,6 +59,9 @@ The emphasis is on system design and operational discipline rather than service 
 - [index.html](index.html): GitHub Pages project page
 - [docker-compose.public.yml](docker-compose.public.yml): representative Compose layout for the public-facing parts of the stack
 - [Caddyfile.public](Caddyfile.public): scrubbed Caddy configuration showing ingress and authentication patterns
+- [DECISIONS.md](DECISIONS.md): engineering tradeoffs behind the stack
+- [.env.example](.env.example): scrubbed environment-variable reference for the public examples
+- [config](config): sample Authelia and Infisical bootstrap configuration
 - [docs/security-architecture.md](docs/security-architecture.md): layered security model
 - [infra/terraform](infra/terraform): external DNS and infrastructure metadata scaffold
 - [scripts](scripts): selected bootstrap, validation, and security workflow scripts
