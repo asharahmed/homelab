@@ -1,0 +1,106 @@
+{
+  email admin@example.com
+  order crowdsec first
+
+  log {
+    output file /var/log/caddy/access.log {
+      roll_size 100MiB
+      roll_keep 10
+    }
+    format json
+  }
+}
+
+(authelia_gate) {
+  forward_auth authelia:9091 {
+    uri /api/verify?rd=https://auth.example.com/
+    copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+    header_up X-Forwarded-Method {method}
+    header_up X-Forwarded-Uri {uri}
+  }
+}
+
+(security_headers) {
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    -Server
+  }
+}
+
+(logout_redirect) {
+  @logout {
+    path_regexp logout ^/(?:api/)?logout(?:/.*)?$
+  }
+  handle @logout {
+    redir https://auth.example.com/api/logout?rd=https://home.example.com/ 302
+  }
+}
+
+https://auth.example.com {
+  import security_headers
+  reverse_proxy authelia:9091
+}
+
+https://home.example.com {
+  import security_headers
+  reverse_proxy homepage:3000
+}
+
+https://grafana.example.com {
+  import security_headers
+  import logout_redirect
+  handle {
+    import authelia_gate
+    reverse_proxy grafana:3000
+  }
+}
+
+https://prometheus.example.com {
+  import security_headers
+  import logout_redirect
+  @probe header X-Blackbox-Token {$BLACKBOX_TOKEN}
+  handle @probe {
+    reverse_proxy prometheus:9090
+  }
+  handle {
+    import authelia_gate
+    reverse_proxy prometheus:9090
+  }
+}
+
+https://alerts.example.com {
+  import security_headers
+  import logout_redirect
+  handle {
+    import authelia_gate
+    reverse_proxy alertmanager:9093
+  }
+}
+
+https://secrets.example.com {
+  import security_headers
+  @trusted remote_ip 10.0.0.0/8 192.168.0.0/16 172.16.0.0/12 100.64.0.0/10
+  handle @trusted {
+    reverse_proxy infisical:8080
+  }
+  handle {
+    respond "forbidden" 403
+  }
+}
+
+https://wazuh.example.com {
+  import security_headers
+  import logout_redirect
+  handle {
+    import authelia_gate
+    reverse_proxy wazuh-dashboard:5601
+  }
+}
+
+https://status.example.com {
+  import security_headers
+  reverse_proxy blackbox-exporter:9115
+}

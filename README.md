@@ -5,178 +5,106 @@
 <h1 align="center">Homelab</h1>
 
 <p align="center">
-  Security-first self-hosted infrastructure on Docker Compose, built as an operational platform rather than a container collection.
+  Public mirror of a private homelab focused on access control, observability, and security operations.
 </p>
 
 <p align="center">
-  <a href="https://asharahmed.github.io/homelab/"><strong>Interactive documentation</strong></a>
+  <a href="https://asharahmed.github.io/homelab/"><strong>Interactive overview</strong></a>
   ·
   <a href="https://github.com/asharahmed"><strong>GitHub profile</strong></a>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/containers-25%2B-b99b63?style=flat-square&labelColor=161b24" alt="25+ containers"/>
-  <img src="https://img.shields.io/badge/SIEM_rules-30K%2B-bd6467?style=flat-square&labelColor=161b24" alt="30K+ SIEM rules"/>
-  <img src="https://img.shields.io/badge/alert_rules-30%2B-5f9f7a?style=flat-square&labelColor=161b24" alt="30+ alert rules"/>
-  <img src="https://img.shields.io/badge/remote_access-Tailscale-6d87b5?style=flat-square&labelColor=161b24" alt="Tailscale remote access"/>
-</p>
+## What this repo is
 
-## What This Is
+This is the cleaned-up public version of the homelab I run day to day.
 
-This repository is the public-facing documentation for a Windows 11 + WSL2 homelab that I use to run security telemetry, observability, identity, AI tooling, and core self-hosted services.
+The live stack runs on Windows 11 with Docker Desktop and WSL2. I use it to test how I want services exposed, how I want authentication enforced, how I want telemetry collected, and how I want operational changes to be documented.
 
-The goal is not “host a lot of apps.” The goal is to operate a small but serious infrastructure platform with:
+I did not want the public repo to be a screenshot gallery or a long service list. The point is to show how the system is put together.
 
-- clear ingress and access boundaries
-- layered detection and response
-- repeatable configuration and deployment workflows
-- real operational visibility across host, containers, network edge, and logs
+## What I optimized for
 
-## Why It Matters
+- a single ingress layer instead of scattered direct exposure
+- consistent authentication in front of sensitive services
+- metrics, logs, and alerts that are actually tied together
+- less secret sprawl and fewer hand-edited runtime values
+- enough documentation that someone else can understand the shape of the system
 
-Most homelab repos stop at screenshots and service lists. This one is intended to show engineering judgment:
+## Core stack
 
-- how services are exposed and protected
-- how telemetry is collected and correlated
-- how incident signal moves from logs to alerts to response
-- how a Compose-based stack can still be run with discipline
+**Edge and access**
+- Caddy
+- Authelia
+- Tailscale
 
-This is the kind of system design, ops thinking, and security posture I care about in production environments too.
+**Observability**
+- Prometheus
+- Alertmanager
+- Grafana
+- Loki
+- Promtail
+- Blackbox Exporter
+- Uptime Kuma
 
-## System Overview
+**Security**
+- CrowdSec
+- Wazuh
+- Velociraptor
+- Trivy
+- Renovate
 
-**Platform base**
+**Platform**
+- Infisical
+- OpenTofu / Terraform
+- Docker Compose
 
-- Windows 11 Pro
-- Docker Desktop + WSL2
-- NVIDIA GPU for transcoding and local inference
-- Tailscale mesh for remote administration
+## What’s in the public mirror
 
-**Ingress and identity**
+- [index.html](index.html): the GitHub Pages project page
+- [docker-compose.public.yml](docker-compose.public.yml): a representative Compose layout for the public-facing parts of the stack
+- [Caddyfile.public](Caddyfile.public): a scrubbed Caddy config showing the ingress and auth model
+- [docs/security-architecture.md](docs/security-architecture.md): the layered security model
+- [infra/terraform](infra/terraform): external DNS and infrastructure metadata scaffold
+- [scripts](scripts): selected bootstrap, validation, and security workflow scripts
+- [tools/monitoring](tools/monitoring): monitoring examples with private and download-specific parts removed
+- [artifacts/homepage-theme](artifacts/homepage-theme): sanitized dashboard design artifacts
 
-- Caddy as reverse proxy and TLS termination layer
-- Authelia for SSO, 2FA, and OIDC-backed access control
-- Internal services reachable through `*.home.aahmed.ca`
-
-**Security stack**
-
-- CrowdSec for log-driven intrusion prevention
-- Wazuh for SIEM/XDR and custom detection rules
-- Velociraptor for endpoint investigation and threat hunting
-- Suricata + netifyd at the router edge for network detection and classification
-- custom CTI ingestion and IOC enrichment workflows
-
-**Observability stack**
-
-- Prometheus for metrics, rules, and alert evaluation
-- Alertmanager for routing to ntfy and Telegram
-- Grafana for dashboards across metrics and logs
-- Loki + Promtail for centralized log search
-- Uptime Kuma and Blackbox Exporter for synthetic checks
-
-## Architecture Snapshot
+## Representative architecture
 
 ```text
 Internet
   -> Caddy
-  -> CrowdSec
+  -> CrowdSec / policy checks
   -> Authelia
-  -> Service
+  -> application
 ```
 
 ```text
-Metrics sources -> Prometheus -> Grafana
-                           -> Alertmanager -> ntfy / Telegram
+metrics -> Prometheus -> Grafana
+                    -> Alertmanager -> ntfy / Telegram
 
-Logs -> Promtail -> Loki -> Grafana
-SIEM -> Wazuh -> alerting / enrichment / response
+logs -> Promtail -> Loki -> Grafana
+security telemetry -> Wazuh -> enrichment / response
 ```
 
-The public site includes the fuller diagrams and service breakdown:
+## Notes
 
-- ingress flow
-- monitoring and logging pipeline
-- network topology
-- automation and platform layout
+This is not a turnkey deployment repository.
 
-## Representative Capabilities
-
-### 1. Defense in depth
-
-Requests are not sent directly to backend services. Access passes through reverse proxy, reputation/blocking, authentication, and service-specific policy.
-
-### 2. Security telemetry that is actually usable
-
-This stack combines endpoint telemetry, network alerts, Prometheus metrics, and log aggregation into one operational picture instead of leaving each tool siloed.
-
-### 3. Detection engineering
-
-The environment includes custom Wazuh rules mapped to MITRE ATT&CK techniques for behaviors like:
-
-- suspicious child processes
-- encoded PowerShell activity
-- credential-access patterns
-- injection-related behavior
-- persistence and C2 indicators
-
-### 4. Operator-grade observability
-
-I treat dashboards and alerting as operating surfaces, not decoration. Metrics, probes, and logs are wired together so failures are visible quickly and routed to the right channels.
-
-### 5. Compose, but with discipline
-
-This is still a Docker Compose stack, but it is managed with the same concerns I would bring to a larger environment: secret handling, ingress boundaries, health validation, documentation, and repeatable change workflows.
-
-## Public Scope
-
-This repository is intentionally sanitized for public presentation.
-
-It focuses on:
-
+It is a curated mirror of the parts that are worth sharing publicly:
 - architecture
-- security controls
-- observability design
-- automation patterns
-- operational decisions
+- ingress and access patterns
+- monitoring and alerting layout
+- security workflow examples
+- Terraform/OpenTofu structure
+- operator-facing documentation and scripts
 
-It does **not** attempt to mirror every private implementation detail from the live environment.
+What is intentionally left out:
+- live secrets
+- generated state
+- exact runtime configs from the private environment
+- private hostnames, IPs, and internal-only service wiring
 
-## Repo Contents
+## Live site
 
-- `index.html` — the public interactive documentation page
-- `logo.svg` — custom project mark
-- `.github/workflows/pages.yml` — GitHub Pages deployment workflow
-
-## Design Artifact
-
-A sanitized excerpt of the internal Homepage operations dashboard is included under [`artifacts/homepage-theme`](artifacts/homepage-theme).
-
-It shows the design system and information architecture behind the private dashboard without exposing internal URLs, credentials, or runtime config.
-
-## Live Site
-
-**GitHub Pages:** https://asharahmed.github.io/homelab/
-
-## Technology
-
-`Docker Compose` `Windows 11` `WSL2` `Caddy` `Authelia` `Prometheus` `Grafana` `Loki` `CrowdSec` `Wazuh` `Velociraptor` `Suricata` `Tailscale` `Ollama`
-
----
-
-<p align="center">
-  Built as a real operating environment, documented as a public systems portfolio.
-</p>
-
-## Repo Mirror
-
-This public repository also includes a sanitized subset of the private homelab repository:
-- Terraform/OpenTofu scaffolding for external DNS and infra metadata
-- secrets-management bootstrap and render scripts for Infisical
-- security scanning workflow with Trivy and Renovate
-- monitoring and Grafana examples with download-specific services removed
-
-Excluded from the public mirror:
-- live runtime configs
-- secrets and generated state
-- internal-only compose/runtime definitions
-- download-specific service wiring
+- GitHub Pages: https://asharahmed.github.io/homelab/

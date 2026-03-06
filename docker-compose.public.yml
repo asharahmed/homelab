@@ -1,0 +1,156 @@
+name: homelab-public
+
+services:
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env.example
+    volumes:
+      - ./Caddyfile.public:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - authelia
+      - homepage
+
+  authelia:
+    image: authelia/authelia:latest
+    container_name: authelia
+    restart: unless-stopped
+    env_file:
+      - .env.example
+    volumes:
+      - ./config/authelia:/config:ro
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    volumes:
+      - ./artifacts/homepage-theme:/app/config:ro
+
+  infisical:
+    image: infisical/infisical:latest
+    container_name: infisical
+    restart: unless-stopped
+    profiles: [platform]
+    env_file:
+      - .env.example
+    depends_on:
+      - infisical-postgres
+      - infisical-redis
+
+  infisical-postgres:
+    image: postgres:16-alpine
+    container_name: infisical-postgres
+    restart: unless-stopped
+    profiles: [platform]
+    environment:
+      POSTGRES_DB: infisical
+      POSTGRES_USER: infisical
+      POSTGRES_PASSWORD: change-me
+    volumes:
+      - infisical_postgres:/var/lib/postgresql/data
+
+  infisical-redis:
+    image: redis:7-alpine
+    container_name: infisical-redis
+    restart: unless-stopped
+    profiles: [platform]
+    command: ["redis-server", "--requirepass", "change-me"]
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    profiles: [monitoring]
+    volumes:
+      - ./tools/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./tools/monitoring/rules/alerts.yml:/etc/prometheus/rules/alerts.yml:ro
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: unless-stopped
+    profiles: [monitoring]
+    volumes:
+      - ./tools/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./tools/monitoring/templates:/etc/alertmanager/templates:ro
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    profiles: [monitoring]
+    volumes:
+      - ./tools/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    restart: unless-stopped
+    profiles: [monitoring]
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    volumes:
+      - ./tools/monitoring/loki-local-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    restart: unless-stopped
+    profiles: [monitoring]
+    command: ["-config.file=/etc/promtail/promtail.yaml"]
+    volumes:
+      - ./tools/monitoring/promtail.yaml:/etc/promtail/promtail.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    container_name: blackbox-exporter
+    restart: unless-stopped
+    profiles: [monitoring]
+    command: ["--config.file=/etc/blackbox/blackbox.yml"]
+    volumes:
+      - ./tools/monitoring/blackbox.yml:/etc/blackbox/blackbox.yml:ro
+
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    restart: unless-stopped
+    profiles: [security]
+    env_file:
+      - .env.example
+    volumes:
+      - crowdsec_data:/var/lib/crowdsec/data
+
+  wazuh-manager:
+    image: wazuh/wazuh-manager:4.9.2
+    container_name: wazuh.manager
+    restart: unless-stopped
+    profiles: [security]
+    volumes:
+      - wazuh_manager:/var/ossec/data
+
+  wazuh-dashboard:
+    image: wazuh/wazuh-dashboard:4.9.2
+    container_name: wazuh.dashboard
+    restart: unless-stopped
+    profiles: [security]
+    depends_on:
+      - wazuh-manager
+
+volumes:
+  caddy_data:
+  caddy_config:
+  grafana_data:
+  loki_data:
+  infisical_postgres:
+  crowdsec_data:
+  wazuh_manager:
