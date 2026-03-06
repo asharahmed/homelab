@@ -14,23 +14,23 @@
   <a href="https://github.com/asharahmed"><strong>GitHub profile</strong></a>
 </p>
 
-## What this repo is
+## Overview
 
-This is the cleaned-up public version of the homelab I run day to day.
+This repository is a sanitized public mirror of an internal homelab environment built on Windows 11, Docker Desktop, and WSL2.
 
-The live stack runs on Windows 11 with Docker Desktop and WSL2. I use it to test how I want services exposed, how I want authentication enforced, how I want telemetry collected, and how I want operational changes to be documented.
+Its purpose is to document the architecture, ingress model, observability stack, and security workflow of the environment without exposing private implementation details, runtime state, or sensitive configuration.
 
-I did not want the public repo to be a screenshot gallery or a long service list. The point is to show how the system is put together.
+The emphasis is on system design and operational discipline rather than service count.
 
-## What I optimized for
+## Design Priorities
 
-- a single ingress layer instead of scattered direct exposure
+- centralized ingress and controlled exposure
 - consistent authentication in front of sensitive services
-- metrics, logs, and alerts that are actually tied together
-- less secret sprawl and fewer hand-edited runtime values
-- enough documentation that someone else can understand the shape of the system
+- integrated metrics, logs, alerting, and security telemetry
+- reduced secret sprawl and repeatable configuration workflows
+- documentation that explains the structure and operating model of the platform
 
-## Core stack
+## Core Stack
 
 **Edge and access**
 - Caddy
@@ -58,18 +58,18 @@ I did not want the public repo to be a screenshot gallery or a long service list
 - OpenTofu / Terraform
 - Docker Compose
 
-## What’s in the public mirror
+## Public Repository Contents
 
-- [index.html](index.html): the GitHub Pages project page
-- [docker-compose.public.yml](docker-compose.public.yml): a representative Compose layout for the public-facing parts of the stack
-- [Caddyfile.public](Caddyfile.public): a scrubbed Caddy config showing the ingress and auth model
-- [docs/security-architecture.md](docs/security-architecture.md): the layered security model
+- [index.html](index.html): GitHub Pages project page
+- [docker-compose.public.yml](docker-compose.public.yml): representative Compose layout for the public-facing parts of the stack
+- [Caddyfile.public](Caddyfile.public): scrubbed Caddy configuration showing ingress and authentication patterns
+- [docs/security-architecture.md](docs/security-architecture.md): layered security model
 - [infra/terraform](infra/terraform): external DNS and infrastructure metadata scaffold
 - [scripts](scripts): selected bootstrap, validation, and security workflow scripts
-- [tools/monitoring](tools/monitoring): monitoring examples with private and download-specific parts removed
+- [tools/monitoring](tools/monitoring): monitoring examples with private and download-specific components removed
 - [artifacts/homepage-theme](artifacts/homepage-theme): sanitized dashboard design artifacts
 
-## Representative architecture
+## Representative Architecture
 
 ```text
 Internet
@@ -87,24 +87,24 @@ logs -> Promtail -> Loki -> Grafana
 security telemetry -> Wazuh -> enrichment / response
 ```
 
-## Notes
+## Scope
 
-This is not a turnkey deployment repository.
+This repository is not intended to be a turnkey deployment source.
 
-It is a curated mirror of the parts that are worth sharing publicly:
+It is a curated public reference for:
 - architecture
-- ingress and access patterns
+- ingress and authentication patterns
 - monitoring and alerting layout
 - security workflow examples
 - Terraform/OpenTofu structure
 - operator-facing documentation and scripts
 
-What is intentionally left out:
+The following are intentionally excluded:
 - live secrets
 - generated state
-- exact runtime configs from the private environment
-- private hostnames, IPs, and internal-only service wiring
+- exact runtime configuration from the private environment
+- private hostnames, IP addresses, and internal-only service wiring
 
-## Live site
+## Live Site
 
 - GitHub Pages: https://asharahmed.github.io/homelab/
