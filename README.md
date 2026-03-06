@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="logo.svg" width="220" alt="Ashar Homelab mark"/>
-</p>
-
 <h1 align="center">Homelab</h1>
 
 <p align="center">
