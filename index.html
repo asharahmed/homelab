@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ashar's Homelab</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='4' y='3' width='24' height='26' rx='3' fill='%230a0a0a' stroke='%23d19a66' stroke-width='1.5'/><rect x='8' y='7' width='16' height='5' rx='1.5' fill='%23141414' stroke='%23d19a66' stroke-width='0.75'/><circle cx='21' cy='9.5' r='1' fill='%2330d158'/><rect x='8' y='14' width='16' height='5' rx='1.5' fill='%23141414' stroke='%23d19a66' stroke-width='0.75'/><circle cx='21' cy='16.5' r='1' fill='%2330d158'/><rect x='8' y='21' width='16' height='5' rx='1.5' fill='%23141414' stroke='%23d19a66' stroke-width='0.75'/><circle cx='21' cy='23.5' r='1' fill='%2330d158'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@300;400;500&display=swap">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0a;
+  --bg-raised: #141414;
+  --bg-elevated: #1a1a1a;
+  --bg-glass: rgba(22, 22, 22, 0.72);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.1);
+  --text-1: #f5f5f7;
+  --text-2: #a1a1a6;
+  --text-3: #6e6e73;
+  --accent: #d19a66;
+  --accent-soft: rgba(209, 154, 102, 0.12);
+  --accent-border: rgba(209, 154, 102, 0.2);
+  --green: #30d158;
+  --green-soft: rgba(48, 209, 88, 0.1);
+  --blue: #64d2ff;
+  --blue-soft: rgba(100, 210, 255, 0.1);
+  --purple: #bf5af2;
+  --purple-soft: rgba(191, 90, 242, 0.1);
+  --red: #ff6369;
+  --red-soft: rgba(255, 99, 105, 0.1);
+  --orange: #ff9f0a;
+  --orange-soft: rgba(255, 159, 10, 0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'DM Mono', 'SF Mono', 'Fira Code', monospace;
+}
+
+html { scroll-behavior: smooth; }
+section[id] { scroll-margin-top: 60px; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-1);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -40px;
+  z-index: 1000;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent-border);
+  color: var(--text-1);
+  font-size: 0.8rem;
+}
+
+.skip-link:focus {
+  top: 10px;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? NAV �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: rgba(10, 10, 10, 0.78);
+  border-bottom: 1px solid var(--border);
+}
+
+nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+}
+
+.nav-brand {
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px rgba(48, 209, 88, 0.5);
+  animation: blink 3s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.8rem;
+  color: var(--text-3);
+  transition: color 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.nav-links a:hover {
+  color: var(--text-1);
+  text-decoration: none;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? HERO �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.hero {
+  padding: 160px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(209, 154, 102, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  filter: blur(40px);
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? HERO GLOBE �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.hero-globe {
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 520px;
+  height: 520px;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+  animation: globeFadeIn 1.6s ease 0.6s forwards;
+  --globe-opacity: 1;
+}
+
+@keyframes globeFadeIn {
+  to { opacity: var(--globe-opacity); }
+}
+
+.hero-globe svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Connection lines pulse (only remaining CSS animation for globe) */
+.globe-connection {
+  stroke-dasharray: 4 8;
+  animation: connectionFlow 3s linear infinite;
+}
+
+@keyframes connectionFlow {
+  to { stroke-dashoffset: -24; }
+}
+
+/* Static node labels */
+.globe-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  fill: var(--text-3);
+  opacity: 0.7;
+}
+
+@media (max-width: 900px) {
+  .hero-globe {
+    right: -120px;
+    width: 400px;
+    height: 400px;
+    --globe-opacity: 0.5;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-globe {
+    right: 50%;
+    transform: translate(50%, -50%);
+    width: 360px;
+    height: 360px;
+    --globe-opacity: 0.2;
+  }
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--accent);
+  margin-bottom: 20px;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.1s forwards;
+}
+
+.hero h1 {
+  font-size: clamp(2.6rem, 5.5vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.2s forwards;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text-2);
+  max-width: 540px;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.35s forwards;
+}
+
+.hero p code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  color: var(--text-1);
+  background: var(--bg-elevated);
+  padding: 2px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? STATS �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.stats {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 56px;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.5s forwards;
+}
+
+.stat-item {
+  flex: 1;
+  background: var(--bg-raised);
+  padding: 24px 20px;
+  text-align: center;
+  min-width: 0;
+}
+
+.stat-num {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+}
+
+.stat-lbl {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? SECTIONS �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.section {
+  padding: 96px 0;
+}
+
+.section-head {
+  margin-bottom: 48px;
+}
+
+.section-tag {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.section-desc {
+  font-size: 0.95rem;
+  color: var(--text-2);
+  margin-top: 10px;
+  max-width: 480px;
+}
+
+.sep {
+  height: 1px;
+  background: var(--border);
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? DIAGRAM CONTAINER �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.diagram-wrap {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  position: relative;
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.diagram-wrap::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-border), transparent);
+}
+
+.diagram-wrap svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.diagram-wrap + .diagram-caption {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.diagram-caption code {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text-2);
+  background: var(--bg-elevated);
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.diagram-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--text-3);
+  text-align: center;
+  margin-top: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? INTERACTIVE DIAGRAM NODES �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.diagram-wrap svg [data-tip] {
+  cursor: pointer;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.diagram-wrap svg [data-tip]:hover {
+  filter: brightness(1.3);
+}
+
+.diagram-wrap svg [data-tip] rect,
+.diagram-wrap svg [data-tip] > rect:first-child {
+  transition: stroke-opacity 0.2s ease;
+}
+
+.diagram-wrap svg [data-tip]:hover rect,
+.diagram-wrap svg [data-tip]:hover > rect:first-child {
+  stroke-opacity: 1;
+  stroke-width: 1.5;
+}
+
+/* Tooltip */
+.svg-tooltip {
+  position: fixed;
+  z-index: 200;
+  pointer-events: none;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hover);
+  border-radius: 10px;
+  padding: 10px 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  max-width: 260px;
+}
+
+.svg-tooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.svg-tooltip .tt-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 4px;
+}
+
+.svg-tooltip .tt-detail {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.svg-tooltip .tt-url {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--accent);
+  margin-top: 4px;
+  display: block;
+}
+
+/* Animated dash flow on arrows */
+.diagram-wrap svg line[stroke-dasharray] {
+  animation: dashflow 1.5s linear infinite;
+  animation-play-state: paused;
+}
+
+.diagram-wrap:hover svg line[stroke-dasharray] {
+  animation-play-state: running;
+}
+
+@keyframes dashflow {
+  to { stroke-dashoffset: -14; }
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? CARDS GRID �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* �"?�"? Service Card �"?�"? */
+.card {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  transition: border-color 0.25s ease, background 0.25s ease;
+  position: relative;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-elevated);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.card-ico {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.card h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.card p {
+  font-size: 0.84rem;
+  color: var(--text-2);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.pill {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-3);
+}
+
+.pill.em {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+}
+
+/* �"?�"? Detail Card �"?�"? */
+.dcard {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  transition: border-color 0.25s ease;
+}
+
+.dcard:hover {
+  border-color: var(--border-hover);
+}
+
+.dcard-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dcard-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.dcard h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.dcard ul {
+  list-style: none;
+}
+
+.dcard li {
+  font-size: 0.82rem;
+  color: var(--text-2);
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+}
+
+.dcard li:last-child { border-bottom: none; }
+
+.dcard li code {
+  font-family: var(--mono);
+  font-size: 0.78em;
+  color: var(--text-1);
+  background: var(--bg-elevated);
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? METRICS ROW �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.metrics-row {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.m-tile {
+  flex: 1;
+  background: var(--bg-raised);
+  padding: 20px 12px;
+  text-align: center;
+}
+
+.m-tile .val {
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.m-tile .lbl {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 4px;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? AUTOMATION �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.acard {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.acard h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-1);
+}
+
+.acard li {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--text-2);
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  list-style: none;
+}
+
+.acard li:last-child { border-bottom: none; }
+
+.acard li span {
+  color: var(--text-3);
+  margin-right: 6px;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? INFRA �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.infra-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.infra-cell {
+  background: var(--bg-raised);
+  padding: 28px 24px;
+}
+
+.infra-cell .lbl {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+
+.infra-cell .val {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.45;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? FOOTER �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+footer {
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+}
+
+footer .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer p {
+  font-size: 0.78rem;
+  color: var(--text-3);
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? SCROLL REVEAL �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.rv {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.rv.vis {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? RESPONSIVE �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+@media (max-width: 900px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .infra-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? SCROLL PROGRESS �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--orange));
+  z-index: 200;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? ACTIVE NAV �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.nav-links a.active {
+  color: var(--accent) !important;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? MOBILE MENU �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.nav-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  position: relative;
+  z-index: 110;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: var(--text-2);
+  margin: 0 auto;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+  border-radius: 1px;
+}
+
+.nav-hamburger span + span { margin-top: 5px; }
+
+.nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.open {
+  display: flex;
+  opacity: 1;
+}
+
+.mobile-overlay a {
+  font-size: 1.2rem;
+  color: var(--text-2);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: color 0.2s;
+}
+
+.mobile-overlay a:hover,
+.mobile-overlay a.active {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? BACK TO TOP �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 90;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hover);
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease, border-color 0.2s ease;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.back-to-top.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.back-to-top svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? CARD GLOW HOVER �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.card {
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card[data-glow="blue"]::before { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+.card[data-glow="orange"]::before { background: linear-gradient(90deg, transparent, var(--orange), transparent); }
+.card[data-glow="green"]::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+.card[data-glow="purple"]::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+.card[data-glow="accent"]::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? STAGGERED REVEALS �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+.rv-delay-1 { transition-delay: 0.06s; }
+.rv-delay-2 { transition-delay: 0.12s; }
+.rv-delay-3 { transition-delay: 0.18s; }
+.rv-delay-4 { transition-delay: 0.24s; }
+.rv-delay-5 { transition-delay: 0.30s; }
+.rv-delay-6 { transition-delay: 0.36s; }
+.rv-delay-7 { transition-delay: 0.42s; }
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? FOOTER IMPROVED �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+footer {
+  padding: 64px 0 48px;
+  border-top: 1px solid var(--border);
+}
+
+footer .wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+footer .footer-brand {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+footer .footer-stack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+footer .footer-stack .pill {
+  font-size: 0.68rem;
+  padding: 4px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  border-radius: 20px;
+}
+
+footer .footer-links {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+footer .footer-links a {
+  font-size: 0.78rem;
+  color: var(--text-3);
+  transition: color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+footer .footer-links a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+footer .footer-copy {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  opacity: 0.6;
+}
+
+/* �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? RESPONSIVE �"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"?�"? */
+@media (max-width: 900px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .infra-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .wrap { padding: 0 20px; }
+  .hero { padding: 120px 0 64px; }
+  .section { padding: 64px 0; }
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .infra-grid { grid-template-columns: 1fr; }
+  .stats { flex-direction: column; gap: 1px; }
+  .metrics-row { flex-direction: column; gap: 1px; }
+  .diagram-wrap { padding: 20px 12px; }
+  .diagram-wrap svg { min-width: 580px; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: block; }
+  nav .wrap { justify-content: space-between; }
+  .back-to-top { bottom: 20px; right: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-globe { display: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#arch">Skip to content</a>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-brand"><span class="nav-dot"></span> homelab</div>
+    <ul class="nav-links">
+      <li><a href="#arch">Architecture</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#monitoring">Monitoring</a></li>
+      <li><a href="#networking">Networking</a></li>
+      <li><a href="#automation">Automation</a></li>
+      <li><a href="https://github.com/asharahmed/homelab" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:5px"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Source</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu" aria-controls="mobileMenu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-overlay" id="mobileMenu" aria-hidden="true">
+  <a href="#arch">Architecture</a>
+  <a href="#services">Services</a>
+  <a href="#security">Security</a>
+  <a href="#monitoring">Monitoring</a>
+  <a href="#networking">Networking</a>
+  <a href="#automation">Automation</a>
+  <a href="https://github.com/asharahmed/homelab" target="_blank" rel="noopener noreferrer">GitHub</a>
+</div>
+
+<!-- �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? HERO �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? -->
+<section class="hero">
+  <div class="hero-globe">
+    <svg viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer glow -->
+      <circle cx="260" cy="260" r="200" fill="none" stroke="rgba(209,154,102,0.04)" stroke-width="60"/>
+
+      <!-- Slow-spinning globe body (sphere + lat/meridian lines rotate together) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="360 260 260" dur="120s" repeatCount="indefinite"/>
+        <circle cx="260" cy="260" r="180" fill="none" stroke="rgba(209,154,102,0.12)" stroke-width="0.75"/>
+        <circle cx="260" cy="260" r="181" fill="none" stroke="rgba(209,154,102,0.04)" stroke-width="4"/>
+        <ellipse cx="260" cy="260" rx="180" ry="60" stroke="rgba(209,154,102,0.06)" stroke-width="0.5" fill="none"/>
+        <ellipse cx="260" cy="260" rx="180" ry="120" stroke="rgba(209,154,102,0.05)" stroke-width="0.5" fill="none"/>
+        <ellipse cx="260" cy="260" rx="60" ry="180" stroke="rgba(209,154,102,0.06)" stroke-width="0.5" fill="none"/>
+        <ellipse cx="260" cy="260" rx="60" ry="180" stroke="rgba(209,154,102,0.05)" stroke-width="0.5" fill="none" transform="rotate(60 260 260)"/>
+        <ellipse cx="260" cy="260" rx="60" ry="180" stroke="rgba(209,154,102,0.04)" stroke-width="0.5" fill="none" transform="rotate(120 260 260)"/>
+      </g>
+
+      <!-- Counter-rotating cross-latitude for depth -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="-360 260 260" dur="90s" repeatCount="indefinite"/>
+        <ellipse cx="260" cy="260" rx="140" ry="180" stroke="rgba(209,154,102,0.04)" stroke-width="0.5" fill="none"/>
+      </g>
+
+      <!-- Orbital ring 1 (blue) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="360 260 260" dur="30s" repeatCount="indefinite"/>
+        <ellipse cx="260" cy="260" rx="210" ry="80" stroke="rgba(100,210,255,0.1)" stroke-width="0.5" fill="none" transform="rotate(-20 260 260)"/>
+      </g>
+
+      <!-- Orbital ring 2 (green) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="-360 260 260" dur="40s" repeatCount="indefinite"/>
+        <ellipse cx="260" cy="260" rx="220" ry="100" stroke="rgba(48,209,88,0.08)" stroke-width="0.5" fill="none" transform="rotate(35 260 260)"/>
+      </g>
+
+      <!-- Orbital ring 3 (purple) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="360 260 260" dur="36s" repeatCount="indefinite"/>
+        <ellipse cx="260" cy="260" rx="200" ry="90" stroke="rgba(191,90,242,0.08)" stroke-width="0.5" fill="none" transform="rotate(-55 260 260)"/>
+      </g>
+
+      <!-- Connection lines (pulsing dashes �?" only CSS animation left) -->
+      <line class="globe-connection" x1="160" y1="160" x2="340" y2="200" stroke="rgba(209,154,102,0.08)" stroke-width="0.5"/>
+      <line class="globe-connection" x1="300" y1="140" x2="220" y2="340" stroke="rgba(100,210,255,0.06)" stroke-width="0.5" style="animation-delay:-1s"/>
+      <line class="globe-connection" x1="180" y1="280" x2="360" y2="300" stroke="rgba(48,209,88,0.06)" stroke-width="0.5" style="animation-delay:-2s"/>
+      <line class="globe-connection" x1="200" y1="180" x2="300" y2="360" stroke="rgba(191,90,242,0.06)" stroke-width="0.5" style="animation-delay:-0.5s"/>
+
+      <!-- Orbiting dot 1 (blue �?" monitoring) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="360 260 260" dur="20s" repeatCount="indefinite"/>
+        <circle cx="470" cy="260" r="3.5" fill="#64d2ff">
+          <animate attributeName="opacity" values="0.4;0.9;0.4" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="470" cy="260" r="8" fill="none" stroke="rgba(100,210,255,0.15)" stroke-width="0.5">
+          <animate attributeName="opacity" values="0.08;0.3;0.08" dur="3s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- Orbiting dot 2 (green �?" proxy) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="-360 260 260" dur="26s" repeatCount="indefinite"/>
+        <circle cx="50" cy="260" r="3" fill="#30d158">
+          <animate attributeName="opacity" values="0.3;0.8;0.3" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="50" cy="260" r="7" fill="none" stroke="rgba(48,209,88,0.15)" stroke-width="0.5">
+          <animate attributeName="opacity" values="0.06;0.25;0.06" dur="4s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- Orbiting dot 3 (purple �?" auth) -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="360 260 260" dur="32s" repeatCount="indefinite"/>
+        <circle cx="260" cy="50" r="3" fill="#bf5af2">
+          <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="260" cy="50" r="7" fill="none" stroke="rgba(191,90,242,0.15)" stroke-width="0.5">
+          <animate attributeName="opacity" values="0.06;0.25;0.06" dur="3.5s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- Static service nodes on the sphere surface -->
+      <circle cx="200" cy="160" r="2.5" fill="#d19a66" opacity="0.5"/>
+      <text class="globe-label" x="208" y="158" opacity="0.5">Plex</text>
+
+      <circle cx="320" cy="180" r="2" fill="#ff6369" opacity="0.4"/>
+      <text class="globe-label" x="326" y="178" opacity="0.4">Wazuh</text>
+
+      <circle cx="180" cy="300" r="2" fill="#64d2ff" opacity="0.4"/>
+      <text class="globe-label" x="188" y="298" opacity="0.4">Grafana</text>
+
+      <circle cx="340" cy="320" r="2" fill="#30d158" opacity="0.35"/>
+      <text class="globe-label" x="348" y="318" opacity="0.35">Loki</text>
+
+      <circle cx="240" cy="380" r="2" fill="#ff6369" opacity="0.35"/>
+      <text class="globe-label" x="248" y="378" opacity="0.35">CrowdSec</text>
+
+      <circle cx="300" cy="140" r="1.5" fill="#bf5af2" opacity="0.3"/>
+      <circle cx="190" cy="220" r="1.5" fill="#64d2ff" opacity="0.3"/>
+      <circle cx="350" cy="260" r="1.5" fill="#d19a66" opacity="0.25"/>
+      <circle cx="230" cy="340" r="1.5" fill="#30d158" opacity="0.25"/>
+      <circle cx="280" cy="200" r="1" fill="#ff9f0a" opacity="0.2"/>
+      <circle cx="220" cy="260" r="1" fill="#ff6369" opacity="0.2"/>
+
+      <!-- Center core glow -->
+      <circle cx="260" cy="260" r="24" fill="rgba(209,154,102,0.04)"/>
+      <circle cx="260" cy="260" r="12" fill="rgba(209,154,102,0.06)"/>
+      <circle cx="260" cy="260" r="4" fill="rgba(209,154,102,0.15)">
+        <animate attributeName="opacity" values="0.1;0.25;0.1" dur="4s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Self-hosted &middot; Docker &middot; Windows 11</div>
+      <h1>Infrastructure that runs itself.</h1>
+      <p>25+ containers orchestrated through Docker Compose on WSL2, secured behind Authelia SSO, CrowdSec, and Wazuh SIEM with live CTI feeds. Network-layer detection via Suricata IDS and netifyd DPI on the GL-BE9300 router. Internal apps use <code>*.home.aahmed.ca</code>, with selected public endpoints on dedicated hostnames.</p>
+    </div>
+    <div class="stats">
+      <div class="stat-item"><div class="stat-num" data-count="25" data-suffix="+">0</div><div class="stat-lbl">Containers</div></div>
+      <div class="stat-item"><div class="stat-num" data-count="30" data-suffix="K+">0</div><div class="stat-lbl">SIEM Rules</div></div>
+      <div class="stat-item"><div class="stat-num" data-count="30" data-suffix="+">0</div><div class="stat-lbl">Alert Rules</div></div>
+      <div class="stat-item"><div class="stat-num" data-count="8" data-suffix="">0</div><div class="stat-lbl">Security Layers</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="sep"></div></div>
+
+<!-- �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? ARCHITECTURE �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? -->
+<section class="section" id="arch">
+  <div class="wrap">
+    <div class="section-head rv">
+      <div class="section-tag">Architecture</div>
+      <div class="section-title">Ingress Flow</div>
+      <div class="section-desc">Every request passes through five layers before reaching a service.</div>
+    </div>
+    <div class="diagram-wrap rv">
+      <svg viewBox="0 0 920 280" fill="none" xmlns="http://www.w3.org/2000/svg" style="min-width:700px">
+        <defs>
+          <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0L8 3L0 6Z" fill="#6e6e73"/></marker>
+          <marker id="ah-accent" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0L8 3L0 6Z" fill="#d19a66"/></marker>
+        </defs>
+        <!-- Nodes -->
+        <g data-tip="Internet|Inbound WAN traffic|Ports :80, :443">
+        <rect x="20" y="90" width="130" height="68" rx="12" fill="#141414" stroke="rgba(100,210,255,0.2)" stroke-width="1"/>
+        <circle cx="85" cy="112" r="10" fill="rgba(100,210,255,0.12)" stroke="rgba(100,210,255,0.3)" stroke-width="0.5"/>
+        <text x="85" y="116" text-anchor="middle" fill="#64d2ff" font-size="10">&#x25C9;</text>
+        <text x="85" y="140" text-anchor="middle" fill="#f5f5f7" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">Internet</text>
+        <text x="85" y="152" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">:80 / :443</text>
+        </g>
+        <!-- Arrow 1 -->
+        <line x1="150" y1="124" x2="184" y2="124" stroke="#6e6e73" stroke-width="1" marker-end="url(#ah)" stroke-dasharray="4 3"/>
+        <g data-tip="Caddy|Reverse proxy with TLS termination|Cloudflare DNS-01 certs, CrowdSec bouncer|*.home.aahmed.ca">
+        <rect x="192" y="90" width="130" height="68" rx="12" fill="#141414" stroke="rgba(48,209,88,0.2)" stroke-width="1"/>
+        <circle cx="257" cy="112" r="10" fill="rgba(48,209,88,0.12)" stroke="rgba(48,209,88,0.3)" stroke-width="0.5"/>
+        <text x="257" y="116" text-anchor="middle" fill="#30d158" font-size="10">&#x25B2;</text>
+        <text x="257" y="140" text-anchor="middle" fill="#f5f5f7" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">Caddy</text>
+        <text x="257" y="152" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">reverse proxy</text>
+        </g>
+        <!-- Arrow 2 -->
+        <line x1="322" y1="124" x2="356" y2="124" stroke="#6e6e73" stroke-width="1" marker-end="url(#ah)" stroke-dasharray="4 3"/>
+        <g data-tip="CrowdSec|Intrusion Prevention System|Bouncer queries LAPI every 15s|Collections: caddy, authelia, http-cve">
+        <rect x="364" y="90" width="130" height="68" rx="12" fill="#141414" stroke="rgba(255,99,105,0.2)" stroke-width="1"/>
+        <circle cx="429" cy="112" r="10" fill="rgba(255,99,105,0.12)" stroke="rgba(255,99,105,0.3)" stroke-width="0.5"/>
+        <text x="429" y="116" text-anchor="middle" fill="#ff6369" font-size="10">&#x25C6;</text>
+        <text x="429" y="140" text-anchor="middle" fill="#f5f5f7" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">CrowdSec</text>
+        <text x="429" y="152" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">IPS &middot; LAPI</text>
+        </g>
+        <!-- Arrow 3 -->
+        <line x1="494" y1="124" x2="528" y2="124" stroke="#6e6e73" stroke-width="1" marker-end="url(#ah)" stroke-dasharray="4 3"/>
+        <g data-tip="Authelia|Single Sign-On gateway|Passkey + biometric or TOTP + password|OIDC provider for Homarr, Grafana|auth.home.aahmed.ca">
+        <rect x="536" y="90" width="130" height="68" rx="12" fill="#141414" stroke="rgba(191,90,242,0.2)" stroke-width="1"/>
+        <circle cx="601" cy="112" r="10" fill="rgba(191,90,242,0.12)" stroke="rgba(191,90,242,0.3)" stroke-width="0.5"/>
+        <text x="601" y="116" text-anchor="middle" fill="#bf5af2" font-size="10">&#x25CF;</text>
+        <text x="601" y="140" text-anchor="middle" fill="#f5f5f7" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">Authelia</text>
+        <text x="601" y="152" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">SSO &middot; 2FA</text>
+        </g>
+        <!-- Arrow 4 -->
+        <line x1="666" y1="124" x2="700" y2="124" stroke="#6e6e73" stroke-width="1" marker-end="url(#ah)" stroke-dasharray="4 3"/>
+        <!-- Services -->
+        <g data-tip="Backend Services|All bound to 127.0.0.1|Only accessible through Caddy|25+ containers on proxy_net">
+        <rect x="708" y="60" width="192" height="128" rx="12" fill="#141414" stroke="rgba(209,154,102,0.2)" stroke-width="1"/>
+        <text x="804" y="84" text-anchor="middle" fill="#d19a66" font-family="DM Mono, monospace" font-size="9" letter-spacing="0.05em">127.0.0.1</text>
+        </g>
+        <g data-tip="Wazuh|SIEM + XDR platform|wazuh.home.aahmed.ca">
+        <rect x="722" y="94" width="78" height="26" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
+        <text x="761" y="111" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Wazuh</text>
+        </g>
+        <g data-tip="Ollama|Local LLM inference|ollama.home.aahmed.ca">
+        <rect x="808" y="94" width="78" height="26" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
+        <text x="847" y="111" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Ollama</text>
+        </g>
+        <g data-tip="Grafana|Dashboards and visualization|Prometheus + Loki datasources|grafana.home.aahmed.ca">
+        <rect x="722" y="126" width="78" height="26" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
+        <text x="761" y="143" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Grafana</text>
+        </g>
+        <g data-tip="Plex|Media server|:32400|plex.home.aahmed.ca">
+        <rect x="808" y="126" width="78" height="26" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
+        <text x="847" y="143" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Plex</text>
+        </g>
+        <rect x="722" y="158" width="164" height="20" rx="4" fill="rgba(255,255,255,0.02)"/>
+        <text x="804" y="172" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="8">+ 20 more services</text>
+        <!-- HTTPS label -->
+        <rect x="60" y="215" width="580" height="28" rx="6" fill="rgba(48,209,88,0.04)" stroke="rgba(48,209,88,0.08)" stroke-width="0.5"/>
+        <text x="350" y="233" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">TLS &middot; Cloudflare DNS-01 certificates &middot; https://{service}.home.aahmed.ca</text>
+      </svg>
+    </div>
+    <div class="diagram-label rv">Request lifecycle from WAN to service</div>
+  </div>
+</section>
+
+<div class="wrap"><div class="sep"></div></div>
+
+<!-- �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? SERVICES �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? -->
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="section-head rv">
+      <div class="section-tag">Services</div>
+      <div class="section-title">Core Stack</div>
+    </div>
+    <div class="grid-4">
+
+      <div class="card rv rv-delay-1" data-glow="blue">
+        <div class="card-head">
+          <div class="card-ico" style="background:var(--blue-soft);border:1px solid rgba(100,210,255,0.15)">&#x25B6;&#xFE0F;</div>
+          <h3>Media Server</h3>
+        </div>
+        <p>Plex media server for self-hosted streaming with GPU-accelerated transcoding.</p>
+        <div class="pills"><span class="pill em">Plex</span></div>
+      </div>
+
+      <div class="card rv rv-delay-2" data-glow="orange">
+        <div class="card-head">
+          <div class="card-ico" style="background:var(--orange-soft);border:1px solid rgba(255,159,10,0.15)">&#x1F4DA;</div>
+          <h3>Media Automation</h3>
+        </div>
+        <p>Automated media library organization and metadata management via the *arr stack.</p>
+        <div class="pills"><span class="pill em">Radarr</span><span class="pill em">Sonarr</span><span class="pill">Readarr</span><span class="pill">Bazarr</span></div>
+      </div>
+
+      <div class="card rv rv-delay-3" data-glow="accent">
+        <div class="card-head">
+          <div class="card-ico" style="background:var(--accent-soft);border:1px solid var(--accent-border)">&#x1F4CB;</div>
+          <h3>Dashboards</h3>
+        </div>
+        <p>Media requests, watch history, library cleanup, and unified dashboard.</p>
+        <div class="pills"><span class="pill em">Overseerr</span><span class="pill">Requestrr</span><span class="pill">Tautulli</span><span class="pill">Homarr</span><span class="pill">Maintainerr</span></div>
+      </div>
+
+      <div class="card rv rv-delay-4" data-glow="purple">
+        <div class="card-head">
+          <div class="card-ico" style="background:var(--purple-soft);border:1px solid rgba(191,90,242,0.15)">&#x1F9E0;</div>
+          <h3>AI / ML</h3>
+        </div>
+        <p>GPU-accelerated local LLM inference with Authelia SSO.</p>
+        <div class="pills"><span class="pill em">Ollama</span><span class="pill em">Open WebUI</span><span class="pill">NVIDIA</span></div>
+      </div>
+
+      <div class="card rv rv-delay-5" data-glow="orange">
+        <div class="card-head">
+          <div class="card-ico" style="background:var(--orange-soft);border:1px solid rgba(255,159,10,0.15)">&#x1F3AC;</div>
+          <h3>Processing</h3>
+        </div>
+        <p>GPU-accelerated media transcoding and format conversion.</p>
+        <div class="pills"><span class="pill em">FileFlows</span><span class="pill">GPU</span><span class="pill">NVIDIA</span></div>
+      </div>
+
+      <div class="card rv rv-delay-6" data-glow="green">
+        <div class="card-head">
+          <div class="card-ico" style="background:var(--green-soft);border:1px solid rgba(48,209,88,0.15)">&#x1F527;</div>
+          <h3>Utilities</h3>
+        </div>
+        <p>Quality profile sync and automated container updates.</p>
+        <div class="pills"><span class="pill">Recyclarr</span><span class="pill">Watchtower</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="sep"></div></div>
+
+<!-- �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? SECURITY �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? -->
+<section class="section" id="security">
+  <div class="wrap">
+    <div class="section-head rv">
+      <div class="section-tag">Security</div>
+      <div class="section-title">Defense in Depth</div>
+    </div>
+    <div class="grid-2">
+
+      <div class="dcard rv">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--green-soft);border:1px solid rgba(48,209,88,0.15)">&#x26A1;</div>
+          <h3>Caddy Reverse Proxy</h3>
+        </div>
+        <ul>
+          <li>HTTPS via Cloudflare DNS-01 certificate renewal</li>
+          <li>All backends bound to <code>127.0.0.1</code></li>
+          <li>JSON access logs feed CrowdSec in real time</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--purple-soft);border:1px solid rgba(191,90,242,0.15)">&#x1F511;</div>
+          <h3>Authelia SSO</h3>
+        </div>
+        <ul>
+          <li><code>forward_auth</code> on every Caddy route</li>
+          <li>Two-factor: passkey + biometric or TOTP</li>
+          <li>OIDC provider for Homarr, Grafana</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--red-soft);border:1px solid rgba(255,99,105,0.15)">&#x1F6E1;</div>
+          <h3>CrowdSec IPS</h3>
+        </div>
+        <ul>
+          <li>Community blocklists + log analysis</li>
+          <li>Bouncer queries LAPI every 15s</li>
+          <li>Collections: caddy, authelia, http-cve</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--orange-soft);border:1px solid rgba(255,159,10,0.15)">&#x1F50E;</div>
+          <h3>Wazuh SIEM</h3>
+        </div>
+        <ul>
+          <li>Windows agent on AsharPC �?" Sysmon + Security + FIM events</li>
+          <li>30,000+ active rules; custom rules 100500�?"100800</li>
+          <li>Syslog TCP listener on <code>:5140</code> for router alerts</li>
+          <li>OpenSearch indexer + dashboard at <code>wazuh.home.aahmed.ca</code></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div style="height:32px"></div>
+
+    <div class="section-head rv" style="margin-bottom:28px">
+      <div class="section-tag">Endpoint &middot; Network &middot; CTI</div>
+      <div class="section-title" style="font-size:1.35rem">Threat Detection</div>
+      <div class="section-desc">Layered detection across hosts, the network edge, and live threat intelligence.</div>
+    </div>
+
+    <div class="grid-3">
+
+      <div class="dcard rv rv-delay-1">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--red-soft);border:1px solid rgba(255,99,105,0.15)">&#x26A1;</div>
+          <h3>Sysmon Detection Rules</h3>
+        </div>
+        <ul>
+          <li>Suspicious child from Office / Browser �?" <code>T1566.001</code></li>
+          <li>Encoded / download commands �?" <code>T1059.001</code></li>
+          <li>Lsass credential access �?" <code>T1003.001</code></li>
+          <li>Remote thread injection �?" <code>T1055</code></li>
+          <li>Registry persistence &amp; C2 named pipes</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv rv-delay-2">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--purple-soft);border:1px solid rgba(191,90,242,0.15)">&#x1F9EC;</div>
+          <h3>CTI &amp; Enrichment</h3>
+        </div>
+        <ul>
+          <li>Daily feeds: Feodo C2 IPs, URLhaus domains, MalwareBazaar hashes</li>
+          <li>CDB match rules fire at level 14�?"15 on network/FIM events</li>
+          <li>AbuseIPDB v2 enrichment �?" score, ISP, country posted to Discord</li>
+          <li>YARA active response on FIM file-create; VirusTotal hash lookup</li>
+          <li>IOC SQLite DB �?" 15-min collector; daily Discord threat hunt report</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv rv-delay-3">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--blue-soft);border:1px solid rgba(100,210,255,0.15)">&#x1F4E1;</div>
+          <h3>Suricata IDS &amp; netifyd DPI</h3>
+        </div>
+        <ul>
+          <li>Suricata in LXC on GL-BE9300 �?" shares host netns, sniffs <code>br-lan</code></li>
+          <li>netifyd nDPI engine �?" flow classification with <code>ndpi_risk_score</code></li>
+          <li>High-risk flows forwarded via TCP syslog to Wazuh (<code>:5140</code>)</li>
+          <li>Rule 100800 fires at level 12 with MITRE <code>T1071</code> tagging</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="sep"></div></div>
+
+<!-- �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? MONITORING �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? -->
+<section class="section" id="monitoring">
+  <div class="wrap">
+    <div class="section-head rv">
+      <div class="section-tag">Monitoring</div>
+      <div class="section-title">Observability</div>
+    </div>
+
+    <div class="metrics-row rv">
+      <div class="m-tile"><div class="val">30s</div><div class="lbl">Scrape</div></div>
+      <div class="m-tile"><div class="val">15d</div><div class="lbl">Metrics</div></div>
+      <div class="m-tile"><div class="val">30d</div><div class="lbl">Logs</div></div>
+      <div class="m-tile"><div class="val">30+</div><div class="lbl">Alerts</div></div>
+      <div class="m-tile"><div class="val">8</div><div class="lbl">Probes</div></div>
+    </div>
+
+    <div class="diagram-wrap rv" style="margin-bottom:20px">
+      <svg viewBox="0 0 920 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="min-width:700px">
+        <defs>
+          <marker id="am" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0 0L7 2.5L0 5Z" fill="#6e6e73"/></marker>
+          <marker id="am-o" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0 0L7 2.5L0 5Z" fill="#ff9f0a"/></marker>
+        </defs>
+
+        <!-- �"?�"? SOURCES (left) �"?�"? -->
+        <text x="90" y="24" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9" letter-spacing="0.06em">SOURCES</text>
+
+        <g data-tip="cAdvisor|Container resource metrics|CPU, memory, network per container|:8080">
+        <rect x="20" y="36" width="140" height="30" rx="6" fill="#141414" stroke="rgba(100,210,255,0.15)" stroke-width="0.5"/>
+        <text x="90" y="55" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">cAdvisor</text>
+        </g>
+
+        <g data-tip="windows-exporter|Windows host metrics|CPU, disk, memory, network|host:9182">
+        <rect x="20" y="72" width="140" height="30" rx="6" fill="#141414" stroke="rgba(100,210,255,0.15)" stroke-width="0.5"/>
+        <text x="90" y="91" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">windows-exporter</text>
+        </g>
+
+        <g data-tip="Exportarr|Application metrics exporters|Service-specific Prometheus exporters">
+        <rect x="20" y="108" width="140" height="30" rx="6" fill="#141414" stroke="rgba(100,210,255,0.15)" stroke-width="0.5"/>
+        <text x="90" y="127" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">Exportarr</text>
+        </g>
+
+        <g data-tip="Blackbox Exporter|8 probe modules|TCP, DNS, TLS cert, ICMP, HTTP|Targets: Cloudflare, Tailscale, LAN, WAN">
+        <rect x="20" y="144" width="140" height="30" rx="6" fill="#141414" stroke="rgba(100,210,255,0.15)" stroke-width="0.5"/>
+        <text x="90" y="163" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">Blackbox probes</text>
+        </g>
+
+        <g data-tip="SNMP + Router|GL.iNet router metrics|Interface stats, latency, uptime|192.168.8.1">
+        <rect x="20" y="180" width="140" height="30" rx="6" fill="#141414" stroke="rgba(100,210,255,0.15)" stroke-width="0.5"/>
+        <text x="90" y="199" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">SNMP &middot; Router</text>
+        </g>
+
+        <!-- Arrows from sources to Prometheus -->
+        <line x1="160" y1="51" x2="244" y2="105" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+        <line x1="160" y1="87" x2="244" y2="108" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+        <line x1="160" y1="123" x2="244" y2="115" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+        <line x1="160" y1="159" x2="244" y2="122" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+        <line x1="160" y1="195" x2="244" y2="128" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+
+        <!-- �"?�"? PROMETHEUS (center-left) �"?�"? -->
+        <g data-tip="Prometheus|Metrics collection and alerting|30s scrape interval, 15d retention|20+ scrape jobs, 30+ alert rules|prometheus.home.aahmed.ca">
+        <rect x="252" y="80" width="160" height="72" rx="12" fill="#141414" stroke="rgba(255,159,10,0.25)" stroke-width="1"/>
+        <text x="332" y="108" text-anchor="middle" fill="#ff9f0a" font-family="DM Sans, sans-serif" font-size="13" font-weight="600">Prometheus</text>
+        <text x="332" y="124" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">30s scrape &middot; 15d</text>
+        <text x="332" y="140" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">20+ jobs &middot; rules</text>
+        </g>
+
+        <!-- Arrow Prometheus �+' Alertmanager -->
+        <line x1="332" y1="152" x2="332" y2="206" stroke="#ff9f0a" stroke-width="1" marker-end="url(#am-o)" opacity="0.6"/>
+        <text x="342" y="185" fill="#6e6e73" font-family="DM Mono, monospace" font-size="8">rules fire</text>
+
+        <!-- �"?�"? ALERTMANAGER �"?�"? -->
+        <g data-tip="Alertmanager|Alert routing and deduplication|Group wait: 30s, repeat: 4h|Routes to ntfy + Telegram|alerts.home.aahmed.ca">
+        <rect x="252" y="214" width="160" height="56" rx="12" fill="#141414" stroke="rgba(255,99,105,0.2)" stroke-width="1"/>
+        <text x="332" y="238" text-anchor="middle" fill="#ff6369" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">Alertmanager</text>
+        <text x="332" y="254" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">group &middot; route &middot; notify</text>
+        </g>
+
+        <!-- Arrows Alertmanager �+' ntfy / Telegram -->
+        <line x1="332" y1="270" x2="298" y2="304" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+        <line x1="332" y1="270" x2="366" y2="304" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+
+        <rect x="260" y="308" width="68" height="24" rx="5" fill="rgba(48,209,88,0.06)" stroke="rgba(48,209,88,0.12)" stroke-width="0.5"/>
+        <text x="294" y="324" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">ntfy</text>
+
+        <rect x="338" y="308" width="68" height="24" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
+        <text x="372" y="324" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Telegram</text>
+
+        <!-- Arrow Prometheus �+' Grafana -->
+        <line x1="412" y1="116" x2="476" y2="116" stroke="#ff9f0a" stroke-width="1" marker-end="url(#am-o)" opacity="0.6"/>
+
+        <!-- �"?�"? GRAFANA (center-right) �"?�"? -->
+        <g data-tip="Grafana|Dashboards and visualization|System health, media stack, router, logs|Datasources: Prometheus + Loki|grafana.home.aahmed.ca">
+        <rect x="484" y="80" width="160" height="72" rx="12" fill="#141414" stroke="rgba(209,154,102,0.25)" stroke-width="1"/>
+        <text x="564" y="108" text-anchor="middle" fill="#d19a66" font-family="DM Sans, sans-serif" font-size="13" font-weight="600">Grafana</text>
+        <text x="564" y="124" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">dashboards &middot; SSO</text>
+        <text x="564" y="140" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">metrics + logs</text>
+        </g>
+
+        <!-- �"?�"? LOG PIPELINE (right side) �"?�"? -->
+        <text x="810" y="24" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9" letter-spacing="0.06em">LOG SOURCES</text>
+
+        <rect x="730" y="36" width="160" height="30" rx="6" fill="#141414" stroke="rgba(48,209,88,0.15)" stroke-width="0.5"/>
+        <text x="810" y="55" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">Docker containers</text>
+
+        <rect x="730" y="72" width="160" height="30" rx="6" fill="#141414" stroke="rgba(48,209,88,0.15)" stroke-width="0.5"/>
+        <text x="810" y="91" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">/var/log &middot; syslog</text>
+
+        <!-- Arrows logs �+' Promtail -->
+        <line x1="810" y1="102" x2="810" y2="138" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+
+        <!-- Promtail -->
+        <g data-tip="Promtail|Log shipping agent|Docker container logs + /var/log|Syslog receiver on 1514/UDP">
+        <rect x="740" y="146" width="140" height="46" rx="10" fill="#141414" stroke="rgba(48,209,88,0.2)" stroke-width="1"/>
+        <text x="810" y="170" text-anchor="middle" fill="#30d158" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">Promtail</text>
+        <text x="810" y="184" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">ship &middot; label</text>
+        </g>
+
+        <!-- Arrow Promtail �+' Loki -->
+        <line x1="810" y1="192" x2="810" y2="228" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#am)" opacity="0.5"/>
+
+        <!-- Loki -->
+        <g data-tip="Loki|Log aggregation engine|30-day retention on local filesystem|Queryable via Grafana|:3100">
+        <rect x="740" y="236" width="140" height="46" rx="10" fill="#141414" stroke="rgba(191,90,242,0.2)" stroke-width="1"/>
+        <text x="810" y="260" text-anchor="middle" fill="#bf5af2" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">Loki</text>
+        <text x="810" y="274" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">30d retention</text>
+        </g>
+
+        <!-- Arrow Loki �+' Grafana -->
+        <line x1="740" y1="259" x2="650" y2="140" stroke="#bf5af2" stroke-width="0.7" marker-end="url(#am)" opacity="0.4" stroke-dasharray="4 3"/>
+
+        <!-- Uptime Kuma standalone -->
+        <g data-tip="Uptime Kuma|Service health monitoring|HTTP, TCP, DNS probes|uptime.home.aahmed.ca">
+        <rect x="484" y="232" width="160" height="40" rx="10" fill="#141414" stroke="rgba(100,210,255,0.15)" stroke-width="0.5"/>
+        <text x="564" y="256" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">Uptime Kuma &middot; status page</text>
+        </g>
+      </svg>
+    </div>
+    <div class="diagram-label rv">Metrics pipeline (left) and log pipeline (right) converge in Grafana</div>
+
+    <div style="height:20px"></div>
+
+    <div class="grid-2">
+
+      <div class="dcard rv">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--orange-soft);border:1px solid rgba(255,159,10,0.15)">&#x1F525;</div>
+          <h3>Prometheus</h3>
+        </div>
+        <ul>
+          <li>20+ scrape jobs: exporters, cAdvisor, blackbox, SNMP</li>
+          <li>Alert rules: health, network, compliance, media, router</li>
+          <li>Alertmanager routes to ntfy + Telegram</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--accent-soft);border:1px solid var(--accent-border)">&#x1F4CA;</div>
+          <h3>Grafana</h3>
+        </div>
+        <ul>
+          <li>Dashboards: system health, media, router, logs</li>
+          <li>Datasources: Prometheus + Loki</li>
+          <li>SSO via Authelia at <code>grafana.home.aahmed.ca</code></li>
+        </ul>
+      </div>
+
+      <div class="dcard rv">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--green-soft);border:1px solid rgba(48,209,88,0.15)">&#x1F4DD;</div>
+          <h3>Loki + Promtail</h3>
+        </div>
+        <ul>
+          <li>All Docker containers + <code>/var/log</code></li>
+          <li>Syslog on <code>1514/UDP</code> for network devices</li>
+          <li>30-day retention, local filesystem</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--blue-soft);border:1px solid rgba(100,210,255,0.15)">&#x1F50D;</div>
+          <h3>Exporters &amp; Probes</h3>
+        </div>
+        <ul>
+          <li>TCP, DNS, TLS, ICMP, HTTP blackbox probes</li>
+          <li>Exportarr: application-specific Prometheus exporters</li>
+          <li>cAdvisor, windows-exporter, plex-exporter, Uptime Kuma</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="sep"></div></div>
+
+<!-- �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? NETWORKING �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? -->
+<section class="section" id="networking">
+  <div class="wrap">
+    <div class="section-head rv">
+      <div class="section-tag">Networking</div>
+      <div class="section-title">Network Topology</div>
+    </div>
+
+    <div class="diagram-wrap rv" style="margin-bottom:20px">
+      <svg viewBox="0 0 920 320" fill="none" xmlns="http://www.w3.org/2000/svg" style="min-width:700px">
+        <defs>
+          <marker id="an" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0 0L7 2.5L0 5Z" fill="#6e6e73"/></marker>
+          <marker id="an-g" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0 0L7 2.5L0 5Z" fill="#30d158"/></marker>
+        </defs>
+
+        <!-- �"?�"? WAN / ISP �"?�"? -->
+        <rect x="380" y="10" width="160" height="40" rx="8" fill="#141414" stroke="rgba(100,210,255,0.2)" stroke-width="1"/>
+        <text x="460" y="34" text-anchor="middle" fill="#64d2ff" font-family="DM Sans, sans-serif" font-size="11" font-weight="600">WAN / ISP</text>
+
+        <!-- Arrow WAN �+' Router -->
+        <line x1="460" y1="50" x2="460" y2="76" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#an)" opacity="0.5"/>
+
+        <!-- �"?�"? Router �"?�"? -->
+        <g data-tip="GL-BE9300 Flint3|Gateway, DHCP, and network IDS|SNMP metrics via prometheus|Suricata LXC + netifyd DPI on br-lan|192.168.8.1">
+        <rect x="370" y="84" width="180" height="48" rx="10" fill="#141414" stroke="rgba(255,159,10,0.2)" stroke-width="1"/>
+        <text x="460" y="104" text-anchor="middle" fill="#ff9f0a" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">GL-BE9300 Flint3</text>
+        <text x="460" y="120" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">192.168.8.1 &middot; Suricata &middot; netifyd</text>
+        </g>
+
+        <!-- Arrow Router �+' Docker Host -->
+        <line x1="460" y1="132" x2="460" y2="158" stroke="#6e6e73" stroke-width="0.7" marker-end="url(#an)" opacity="0.5"/>
+
+        <!-- �"?�"? Docker Host �"?�"? (large container) -->
+        <rect x="40" y="166" width="840" height="142" rx="14" fill="rgba(20,20,20,0.6)" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="80" y="186" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9" letter-spacing="0.06em">DOCKER HOST &middot; Windows 11 &middot; WSL2</text>
+
+        <!-- proxy_net zone -->
+        <rect x="60" y="196" width="380" height="98" rx="10" fill="rgba(48,209,88,0.03)" stroke="rgba(48,209,88,0.1)" stroke-width="0.5"/>
+        <text x="80" y="214" fill="#30d158" font-family="DM Mono, monospace" font-size="8" letter-spacing="0.05em">proxy_net 172.30.0.0/16</text>
+
+        <!-- Caddy in proxy_net -->
+        <g data-tip="Caddy|Reverse proxy on proxy_net|172.30.0.2|:80, :443, :9999">
+        <rect x="76" y="224" width="110" height="36" rx="7" fill="#141414" stroke="rgba(48,209,88,0.2)" stroke-width="0.5"/>
+        <text x="131" y="246" text-anchor="middle" fill="#30d158" font-family="DM Sans, sans-serif" font-size="10" font-weight="600">Caddy</text>
+        </g>
+
+        <!-- Services in proxy_net -->
+        <rect x="200" y="224" width="72" height="28" rx="5" fill="#141414" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+        <text x="236" y="242" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Radarr</text>
+        <rect x="280" y="224" width="72" height="28" rx="5" fill="#141414" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+        <text x="316" y="242" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Sonarr</text>
+        <rect x="360" y="224" width="68" height="28" rx="5" fill="#141414" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+        <text x="394" y="242" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">+20</text>
+
+        <rect x="200" y="258" width="228" height="22" rx="4" fill="rgba(255,255,255,0.015)"/>
+        <text x="314" y="273" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="8">all bound to 127.0.0.1</text>
+
+        <!-- Arrow Caddy �+" Services -->
+        <line x1="186" y1="240" x2="198" y2="240" stroke="#30d158" stroke-width="0.7" marker-end="url(#an-g)" opacity="0.5"/>
+
+
+        <!-- �"?�"? Tailscale overlay �"?�"? -->
+        <g data-tip="Tailscale|WireGuard mesh VPN overlay|100.x.x.x CGNAT addresses|Remote access from any device|Split DNS via CoreDNS">
+        <rect x="60" y="10" width="280" height="42" rx="8" fill="#141414" stroke="rgba(100,210,255,0.2)" stroke-width="1"/>
+        <text x="200" y="30" text-anchor="middle" fill="#64d2ff" font-family="DM Sans, sans-serif" font-size="11" font-weight="600">Tailscale Mesh</text>
+        <text x="200" y="44" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">100.x.x.x &middot; remote access</text>
+        </g>
+
+        <!-- Arrow Tailscale �+' Docker Host -->
+        <line x1="200" y1="52" x2="200" y2="164" stroke="#64d2ff" stroke-width="0.7" marker-end="url(#an)" opacity="0.3" stroke-dasharray="4 3"/>
+
+        <!-- CoreDNS -->
+        <g data-tip="CoreDNS|Authoritative DNS for home.aahmed.ca|Runs on Tailscale interface|100.69.154.58:53 TCP+UDP|Returns REFUSED for other domains">
+        <rect x="700" y="84" width="170" height="48" rx="10" fill="#141414" stroke="rgba(100,210,255,0.15)" stroke-width="0.5"/>
+        <text x="785" y="106" text-anchor="middle" fill="#64d2ff" font-family="DM Sans, sans-serif" font-size="11" font-weight="600">CoreDNS</text>
+        <text x="785" y="122" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">home.aahmed.ca zone</text>
+        </g>
+
+        <!-- Arrow Tailscale �+' CoreDNS -->
+        <line x1="340" y1="31" x2="698" y2="100" stroke="#64d2ff" stroke-width="0.5" marker-end="url(#an)" opacity="0.25" stroke-dasharray="3 3"/>
+      </svg>
+    </div>
+    <div class="diagram-label rv">Docker host networks, VPN isolation, and remote access overlay</div>
+
+    <div style="height:20px"></div>
+
+    <div class="grid-2">
+
+      <div class="dcard rv rv-delay-1">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--green-soft);border:1px solid rgba(48,209,88,0.15)">&#x1F310;</div>
+          <h3>WireGuard VPN Gateway</h3>
+        </div>
+        <ul>
+          <li>WireGuard tunnel for privacy-sensitive services</li>
+          <li><code>network_mode: "service:gluetun"</code></li>
+          <li>VPN-routed containers isolated from host network</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv rv-delay-2">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--blue-soft);border:1px solid rgba(100,210,255,0.15)">&#x1F4E1;</div>
+          <h3>Split DNS + Tailscale</h3>
+        </div>
+        <ul>
+          <li>CoreDNS for <code>home.aahmed.ca</code> on Tailscale</li>
+          <li>Mesh VPN for remote access everywhere</li>
+          <li>Docker bridge <code>proxy_net 172.30.0.0/16</code></li>
+        </ul>
+      </div>
+
+      <div class="dcard rv rv-delay-3">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--red-soft);border:1px solid rgba(255,99,105,0.15)">&#x1F6F0;</div>
+          <h3>Router IDS �?" GL-BE9300 Flint3</h3>
+        </div>
+        <ul>
+          <li>Suricata in LXC container �?" host netns, sniffs <code>br-lan</code> directly</li>
+          <li>netifyd nDPI daemon �?" per-flow risk scoring on all LAN traffic</li>
+          <li>High-risk DPI events �+' TCP syslog �+' Wazuh <code>:5140</code> �+' alert</li>
+          <li>Public file access at <code>homefiles.aahmed.ca</code></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="sep"></div></div>
+
+<!-- �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? AUTOMATION �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? -->
+<section class="section" id="automation">
+  <div class="wrap">
+    <div class="section-head rv">
+      <div class="section-tag">Automation</div>
+      <div class="section-title">Tooling &amp; Scripts</div>
+    </div>
+    <div class="grid-3">
+
+      <div class="acard rv">
+        <h3>PowerShell</h3>
+        <ul>
+          <li><span>$</span> validate-stack.ps1</li>
+          <li><span>$</span> prepare-monitoring.ps1</li>
+          <li><span>$</span> harden-rdp.ps1</li>
+          <li><span>$</span> cleanup-media-cache.ps1</li>
+          <li><span>$</span> vm-control.ps1</li>
+          <li><span>$</span> cf-update-dns.ps1</li>
+        </ul>
+      </div>
+
+      <div class="acard rv">
+        <h3>Python</h3>
+        <ul>
+          <li><span>&gt;</span> add_missing_kuma_monitors.py</li>
+          <li><span>&gt;</span> plex-scan-corrupt-streams.py</li>
+          <li><span>&gt;</span> telegram-bot/app.py</li>
+          <li><span>&gt;</span> update_cti_feeds.py</li>
+          <li><span>&gt;</span> ioc_collector.py</li>
+          <li><span>&gt;</span> threat_hunt_report.py</li>
+        </ul>
+      </div>
+
+      <div class="acard rv">
+        <h3>Scheduled</h3>
+        <ul>
+          <li><span>&#x23F0;</span> Watchtower &mdash; daily 4 AM</li>
+          <li><span>&#x23F0;</span> Recyclarr &mdash; TRaSH sync</li>
+          <li><span>&#x23F0;</span> Cleanup &mdash; stale cache files</li>
+          <li><span>&#x23F0;</span> CTI feeds &mdash; daily 03:00 UTC</li>
+          <li><span>&#x23F0;</span> IOC collector &mdash; every 15 min</li>
+          <li><span>&#x23F0;</span> Threat hunt report &mdash; daily 07:00 UTC</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="sep"></div></div>
+
+<!-- �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? INFRASTRUCTURE �?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�?�? -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head rv">
+      <div class="section-tag">Infrastructure</div>
+      <div class="section-title">Platform</div>
+    </div>
+    <div class="infra-grid rv">
+      <div class="infra-cell">
+        <div class="lbl">OS</div>
+        <div class="val">Windows 11 Pro<br>Docker Desktop + WSL2</div>
+      </div>
+      <div class="infra-cell">
+        <div class="lbl">GPU</div>
+        <div class="val">NVIDIA<br>Transcoding &amp; LLM</div>
+      </div>
+      <div class="infra-cell">
+        <div class="lbl">Remote</div>
+        <div class="val">Tailscale mesh<br>RDP</div>
+      </div>
+      <div class="infra-cell">
+        <div class="lbl">Config</div>
+        <div class="val">Environment-driven<br>Conventional commits</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-brand"><span class="nav-dot"></span> homelab</div>
+    <div class="footer-stack">
+      <span class="pill">Docker</span>
+      <span class="pill">WSL2</span>
+      <span class="pill">Caddy</span>
+      <span class="pill">Prometheus</span>
+      <span class="pill">Grafana</span>
+      <span class="pill">Loki</span>
+      <span class="pill">Authelia</span>
+      <span class="pill">CrowdSec</span>
+      <span class="pill">Wazuh</span>
+      <span class="pill">Suricata</span>
+      <span class="pill">Tailscale</span>
+      <span class="pill">Plex</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/asharahmed" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Ashar Ahmed
+      </a>
+      <a href="https://github.com/asharahmed/homelab" target="_blank" rel="noopener noreferrer">
+        View source
+      </a>
+    </div>
+    <div class="footer-copy">Self-hosted on Windows 11 &middot; Docker Desktop &middot; WSL2</div>
+  </div>
+</footer>
+
+<script>
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// �"?�"? Scroll reveal �"?�"?
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('vis');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+// �"?�"? Animated stat counters �"?�"?
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      if (prefersReducedMotion) {
+        el.textContent = target + suffix;
+        counterObserver.unobserve(el);
+        return;
+      }
+      const duration = 1200;
+      const start = performance.now();
+      function tick(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target) + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+// �"?�"? Scroll progress bar �"?�"?
+const scrollProgress = document.getElementById('scrollProgress');
+function updateProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  scrollProgress.style.width = docHeight > 0 ? (scrollTop / docHeight * 100) + '%' : '0%';
+}
+
+// �"?�"? Active nav section highlighting �"?�"?
+const sections = document.querySelectorAll('section[id]');
+const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+const mobileAnchors = document.querySelectorAll('.mobile-overlay a[href^="#"]');
+
+function updateActiveNav() {
+  let currentId = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) currentId = s.id;
+  });
+  navAnchors.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + currentId);
+  });
+  mobileAnchors.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + currentId);
+  });
+}
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+updateActiveNav();
+
+// �"?�"? Mobile hamburger menu �"?�"?
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+
+function setMenuOpen(isOpen) {
+  hamburger.classList.toggle('open', isOpen);
+  mobileMenu.classList.toggle('open', isOpen);
+  hamburger.setAttribute('aria-expanded', String(isOpen));
+  mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
+hamburger.addEventListener('click', () => {
+  setMenuOpen(!mobileMenu.classList.contains('open'));
+});
+
+mobileMenu.addEventListener('click', (e) => {
+  if (e.target === mobileMenu) {
+    setMenuOpen(false);
+    hamburger.focus();
+  }
+});
+
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    setMenuOpen(false);
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+    setMenuOpen(false);
+    hamburger.focus();
+  }
+});
+
+// �"?�"? Back to top button �"?�"?
+const backToTop = document.getElementById('backToTop');
+function updateBackToTop() {
+  backToTop.classList.toggle('show', window.scrollY > 400);
+}
+
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+});
+
+let scrollTicking = false;
+function handleScrollFrame() {
+  updateProgress();
+  updateActiveNav();
+  updateBackToTop();
+  scrollTicking = false;
+}
+
+window.addEventListener('scroll', () => {
+  if (!scrollTicking) {
+    scrollTicking = true;
+    requestAnimationFrame(handleScrollFrame);
+  }
+}, { passive: true });
+handleScrollFrame();
+
+// �"?�"? SVG Tooltip system �"?�"?
+(function() {
+  const tt = document.createElement('div');
+  tt.className = 'svg-tooltip';
+  document.body.appendChild(tt);
+
+  let hideTimer = null;
+
+  function showTooltip(el, e) {
+    clearTimeout(hideTimer);
+    const raw = el.getAttribute('data-tip');
+    if (!raw) return;
+    const parts = raw.split('|');
+    const name = parts[0] || '';
+    const details = parts.slice(1);
+
+    let url = '';
+    const detailLines = [];
+    details.forEach(d => {
+      const trimmed = d.trim();
+      if (trimmed.includes('.home.aahmed.ca')) {
+        url = trimmed;
+      } else {
+        detailLines.push(trimmed);
+      }
+    });
+
+    tt.textContent = '';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'tt-name';
+    nameEl.textContent = name;
+    tt.appendChild(nameEl);
+
+    const detailEl = document.createElement('div');
+    detailEl.className = 'tt-detail';
+    if (detailLines.length === 0) {
+      detailEl.textContent = '';
+    } else {
+      detailLines.forEach((line, idx) => {
+        if (idx > 0) detailEl.appendChild(document.createElement('br'));
+        detailEl.appendChild(document.createTextNode(line));
+      });
+    }
+    tt.appendChild(detailEl);
+
+    if (url) {
+      const urlEl = document.createElement('span');
+      urlEl.className = 'tt-url';
+      urlEl.textContent = url;
+      tt.appendChild(urlEl);
+    }
+
+    const x = e.clientX;
+    const y = e.clientY;
+    const pad = 14;
+    tt.style.left = (x + pad) + 'px';
+    tt.style.top = (y + pad) + 'px';
+
+    requestAnimationFrame(() => {
+      const r = tt.getBoundingClientRect();
+      if (r.right > window.innerWidth - 12) {
+        tt.style.left = (x - r.width - pad) + 'px';
+      }
+      if (r.bottom > window.innerHeight - 12) {
+        tt.style.top = (y - r.height - pad) + 'px';
+      }
+      tt.classList.add('show');
+    });
+  }
+
+  function hideTooltip() {
+    hideTimer = setTimeout(() => {
+      tt.classList.remove('show');
+    }, 80);
+  }
+
+  document.querySelectorAll('.diagram-wrap svg [data-tip]').forEach(el => {
+    el.addEventListener('mouseenter', (e) => showTooltip(el, e));
+    el.addEventListener('mousemove', (e) => {
+      if (tt.classList.contains('show')) {
+        tt.style.left = (e.clientX + 14) + 'px';
+        tt.style.top = (e.clientY + 14) + 'px';
+      }
+    });
+    el.addEventListener('mouseleave', hideTooltip);
+  });
+
+  document.querySelectorAll('.diagram-wrap svg [data-tip]').forEach(el => {
+    el.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      showTooltip(el, { clientX: touch.clientX, clientY: touch.clientY });
+      setTimeout(hideTooltip, 3000);
+    }, { passive: false });
+  });
+})();
+</script>
+
+</body>
+</html>
