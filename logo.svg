@@ -1,101 +1,93 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
   <defs>
-    <radialGradient id="bg-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#1a1814"/>
-      <stop offset="100%" stop-color="#0a0908"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141821"/>
+      <stop offset="100%" stop-color="#0b0d12"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d2bc8a"/>
+      <stop offset="50%" stop-color="#a98a55"/>
+      <stop offset="100%" stop-color="#d2bc8a"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ced6e1" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#7d8798" stop-opacity="0.65"/>
+    </linearGradient>
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d2bc8a" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#d2bc8a" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#d19a66"/>
-      <stop offset="50%" stop-color="#b08050"/>
-      <stop offset="100%" stop-color="#d19a66"/>
-    </linearGradient>
-    <linearGradient id="inner-grad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#d19a66" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#d19a66" stop-opacity="0.03"/>
-    </linearGradient>
-    <clipPath id="circle-clip">
-      <circle cx="200" cy="200" r="155"/>
+    <clipPath id="shieldClip">
+      <path d="M256 34L394 84V214C394 319 334 409 256 454C178 409 118 319 118 214V84L256 34Z"/>
     </clipPath>
+    <path id="ringTop" d="M112 256C112 176.471 176.471 112 256 112C335.529 112 400 176.471 400 256"/>
+    <path id="ringBottom" d="M400 256C400 335.529 335.529 400 256 400C176.471 400 112 335.529 112 256"/>
   </defs>
 
-  <!-- Background -->
-  <rect width="400" height="400" fill="url(#bg-glow)" rx="0"/>
+  <rect width="512" height="512" rx="36" fill="url(#bg)"/>
 
-  <!-- Outer ring — thick, authoritative -->
-  <circle cx="200" cy="200" r="172" stroke="url(#ring-grad)" stroke-width="3" fill="none"/>
-  <circle cx="200" cy="200" r="158" stroke="#d19a66" stroke-width="0.5" fill="none" opacity="0.3"/>
+  <path d="M256 34L394 84V214C394 319 334 409 256 454C178 409 118 319 118 214V84L256 34Z" fill="#10141c" stroke="url(#metal)" stroke-width="5"/>
+  <path d="M256 58L374 101V214C374 308 322 388 256 428C190 388 138 308 138 214V101L256 58Z" fill="#11161f" stroke="rgba(210,188,138,0.24)" stroke-width="2"/>
 
-  <!-- Ring text — agency-style circular text -->
-  <path id="top-arc" d="M 60,200 a 140,140 0 0,1 280,0" fill="none"/>
-  <text font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="600" fill="#d19a66" letter-spacing="0.28em">
-    <textPath href="#top-arc" startOffset="50%" text-anchor="middle">HOMELAB INFRASTRUCTURE</textPath>
-  </text>
+  <g clip-path="url(#shieldClip)">
+    <rect x="90" y="90" width="332" height="332" fill="url(#coreGlow)"/>
 
-  <path id="bottom-arc" d="M 340,200 a 140,140 0 0,1 -280,0" fill="none"/>
-  <text font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="500" fill="#d19a66" letter-spacing="0.22em" opacity="0.7">
-    <textPath href="#bottom-arc" startOffset="50%" text-anchor="middle">SECURITY · OBSERVABILITY · AUTOMATION</textPath>
-  </text>
+    <g opacity="0.2" stroke="#b2bdd0" stroke-width="1">
+      <path d="M84 148H428"/>
+      <path d="M84 202H428"/>
+      <path d="M84 256H428"/>
+      <path d="M84 310H428"/>
+      <path d="M84 364H428"/>
+      <path d="M148 84V428"/>
+      <path d="M202 84V428"/>
+      <path d="M256 84V428"/>
+      <path d="M310 84V428"/>
+      <path d="M364 84V428"/>
+    </g>
 
-  <!-- Separator dots on the ring -->
-  <circle cx="55" cy="200" r="2.5" fill="#d19a66" opacity="0.6"/>
-  <circle cx="345" cy="200" r="2.5" fill="#d19a66" opacity="0.6"/>
+    <circle cx="256" cy="248" r="104" stroke="rgba(210,188,138,0.28)" stroke-width="1.5"/>
+    <circle cx="256" cy="248" r="76" stroke="rgba(210,188,138,0.22)" stroke-width="1.2"/>
+    <circle cx="256" cy="248" r="48" stroke="rgba(210,188,138,0.18)" stroke-width="1"/>
 
-  <!-- Inner fill -->
-  <circle cx="200" cy="200" r="120" fill="url(#inner-grad)"/>
+    <g stroke="url(#steel)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M256 134L338 181V275L256 322L174 275V181L256 134Z"/>
+      <path d="M256 170L307 199V257L256 286L205 257V199L256 170Z" opacity="0.85"/>
+      <path d="M256 198V248"/>
+      <path d="M214 223H298"/>
+      <path d="M174 181L256 248L338 181" opacity="0.7"/>
+      <path d="M174 275L256 248L338 275" opacity="0.7"/>
+    </g>
 
-  <!-- Grid / crosshair lines — surveillance aesthetic -->
-  <g clip-path="url(#circle-clip)" opacity="0.08" stroke="#d19a66" stroke-width="0.5">
-    <line x1="200" y1="45" x2="200" y2="355"/>
-    <line x1="45" y1="200" x2="355" y2="200"/>
-    <line x1="95" y1="55" x2="305" y2="345"/>
-    <line x1="305" y1="55" x2="95" y2="345"/>
-    <circle cx="200" cy="200" r="60" fill="none"/>
-    <circle cx="200" cy="200" r="90" fill="none"/>
-    <circle cx="200" cy="200" r="120" fill="none"/>
+    <g fill="#d2bc8a">
+      <circle cx="256" cy="134" r="5.5"/>
+      <circle cx="338" cy="181" r="5"/>
+      <circle cx="338" cy="275" r="5"/>
+      <circle cx="256" cy="322" r="5.5"/>
+      <circle cx="174" cy="275" r="5"/>
+      <circle cx="174" cy="181" r="5"/>
+      <circle cx="256" cy="248" r="8"/>
+    </g>
+
+    <g opacity="0.3" stroke="#d2bc8a" stroke-width="1.2">
+      <path d="M110 120L160 120"/>
+      <path d="M352 120L402 120"/>
+      <path d="M110 376L160 376"/>
+      <path d="M352 376L402 376"/>
+    </g>
   </g>
 
-  <!-- Central emblem — stylized eye / all-seeing-node -->
-  <!-- Outer orbit rings -->
-  <ellipse cx="200" cy="200" rx="80" ry="32" stroke="#d19a66" stroke-width="0.7" fill="none" opacity="0.25" transform="rotate(-20 200 200)"/>
-  <ellipse cx="200" cy="200" rx="80" ry="32" stroke="#d19a66" stroke-width="0.7" fill="none" opacity="0.2" transform="rotate(25 200 200)"/>
-  <ellipse cx="200" cy="200" rx="80" ry="32" stroke="#d19a66" stroke-width="0.5" fill="none" opacity="0.15" transform="rotate(70 200 200)"/>
+  <circle cx="256" cy="256" r="166" stroke="rgba(210,188,138,0.26)" stroke-width="1.5"/>
+  <circle cx="256" cy="256" r="182" stroke="rgba(210,188,138,0.12)" stroke-width="1"/>
 
-  <!-- Hex shape — node cluster -->
-  <polygon points="200,148 245,174 245,226 200,252 155,226 155,174"
-           fill="none" stroke="#d19a66" stroke-width="1.5" opacity="0.5"/>
-  <polygon points="200,160 235,180 235,220 200,240 165,220 165,180"
-           fill="rgba(209,154,102,0.06)" stroke="#d19a66" stroke-width="0.5" opacity="0.3"/>
+  <text font-family="'Instrument Sans','Segoe UI',sans-serif" font-size="15" font-weight="700" fill="#d2bc8a" letter-spacing="0.34em">
+    <textPath href="#ringTop" startOffset="50%" text-anchor="middle">ASHAR HOMELAB</textPath>
+  </text>
+  <text font-family="'Instrument Sans','Segoe UI',sans-serif" font-size="12.5" font-weight="600" fill="#92a0b6" letter-spacing="0.22em">
+    <textPath href="#ringBottom" startOffset="50%" text-anchor="middle">SECURITY • OBSERVABILITY • AUTOMATION</textPath>
+  </text>
 
-  <!-- Central core -->
-  <circle cx="200" cy="200" r="18" fill="rgba(209,154,102,0.08)" stroke="#d19a66" stroke-width="1" opacity="0.6"/>
-  <circle cx="200" cy="200" r="8" fill="#d19a66" opacity="0.15"/>
-  <circle cx="200" cy="200" r="3.5" fill="#d19a66" opacity="0.7"/>
-
-  <!-- Node points on hex vertices -->
-  <circle cx="200" cy="148" r="3" fill="#d19a66" opacity="0.5"/>
-  <circle cx="245" cy="174" r="2.5" fill="#d19a66" opacity="0.4"/>
-  <circle cx="245" cy="226" r="2.5" fill="#d19a66" opacity="0.4"/>
-  <circle cx="200" cy="252" r="3" fill="#d19a66" opacity="0.5"/>
-  <circle cx="155" cy="226" r="2.5" fill="#d19a66" opacity="0.4"/>
-  <circle cx="155" cy="174" r="2.5" fill="#d19a66" opacity="0.4"/>
-
-  <!-- Connection lines from nodes to center -->
-  <line x1="200" y1="148" x2="200" y2="197" stroke="#d19a66" stroke-width="0.5" opacity="0.2"/>
-  <line x1="245" y1="174" x2="203" y2="197" stroke="#d19a66" stroke-width="0.5" opacity="0.2"/>
-  <line x1="245" y1="226" x2="203" y2="203" stroke="#d19a66" stroke-width="0.5" opacity="0.2"/>
-  <line x1="200" y1="252" x2="200" y2="203" stroke="#d19a66" stroke-width="0.5" opacity="0.2"/>
-  <line x1="155" y1="226" x2="197" y2="203" stroke="#d19a66" stroke-width="0.5" opacity="0.2"/>
-  <line x1="155" y1="174" x2="197" y2="197" stroke="#d19a66" stroke-width="0.5" opacity="0.2"/>
-
-  <!-- Small satellite nodes — scattered like data points -->
-  <circle cx="160" cy="135" r="1.5" fill="#d19a66" opacity="0.25"/>
-  <circle cx="250" cy="145" r="1" fill="#d19a66" opacity="0.2"/>
-  <circle cx="265" cy="200" r="1.5" fill="#d19a66" opacity="0.2"/>
-  <circle cx="240" cy="260" r="1" fill="#d19a66" opacity="0.2"/>
-  <circle cx="145" cy="245" r="1.5" fill="#d19a66" opacity="0.2"/>
-  <circle cx="130" cy="190" r="1" fill="#d19a66" opacity="0.2"/>
-
-  <!-- Stars / rank marks flanking the bottom text — military/agency touch -->
-  <polygon points="63,200 65,195 67,200 65,205" fill="#d19a66" opacity="0.4"/>
-  <polygon points="337,200 339,195 341,200 339,205" fill="#d19a66" opacity="0.4"/>
+  <g fill="#d2bc8a" opacity="0.75">
+    <circle cx="88" cy="256" r="4"/>
+    <circle cx="424" cy="256" r="4"/>
+  </g>
 </svg>
