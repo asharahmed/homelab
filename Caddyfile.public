@@ -91,14 +91,6 @@ https://secrets.example.com {
   }
 }
 
-https://wazuh.example.com {
-  import security_headers
-  import logout_redirect
-  handle {
-    import authelia_gate
-    reverse_proxy wazuh-dashboard:5601
-  }
-}
 
 https://status.example.com {
   import security_headers
