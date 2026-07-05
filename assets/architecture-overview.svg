@@ -57,8 +57,8 @@
 
   <rect x="1034" y="232" width="268" height="116" rx="20" class="node"/>
   <text x="1062" y="274" class="node-title">Platform Services</text>
-  <text x="1062" y="298" class="node-copy">Homepage, Grafana, Wazuh, Files,</text>
-  <text x="1062" y="318" class="node-copy">ntfy, media management, AI tooling</text>
+  <text x="1062" y="298" class="node-copy">Homepage, Grafana, Files, ntfy,</text>
+  <text x="1062" y="318" class="node-copy">Prometheus, Loki, Uptime Kuma</text>
 
   <line x1="246" y1="290" x2="314" y2="290" stroke="url(#flow)" stroke-width="4" marker-end="url(#arrow)"/>
   <line x1="484" y1="290" x2="552" y2="290" stroke="url(#flow)" stroke-width="4" marker-end="url(#arrow)"/>
@@ -94,8 +94,8 @@
   <text x="956" y="468" class="zone-copy">Detection, response, secrets, and external infra state</text>
 
   <rect x="966" y="506" width="164" height="98" rx="20" class="node"/>
-  <text x="994" y="546" class="node-title">Wazuh</text>
-  <text x="994" y="568" class="node-copy">SIEM and endpoint telemetry</text>
+  <text x="994" y="546" class="node-title">Sentinel</text>
+  <text x="994" y="568" class="node-copy">Cloud SIEM + Defender XDR</text>
 
   <rect x="1148" y="506" width="156" height="98" rx="20" class="node"/>
   <text x="1176" y="546" class="node-title">CrowdSec</text>
