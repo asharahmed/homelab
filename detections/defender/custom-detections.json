@@ -1,0 +1,54 @@
+{
+  "rules": [
+    {
+      "id": "lsass_credential_access",
+      "displayName": "Credential Access Attempt Against LSASS",
+      "description": "Detects a process opening a handle to lsass.exe — the core behavior behind LSASS memory credential dumping (Mimikatz, comsvcs.dll). Ported from Sigma rule lsass_credential_access.yml (T1003.001).",
+      "severity": "high",
+      "queryFrequency": "PT1H",
+      "mitreTechniques": ["T1003"],
+      "category": "CredentialAccess",
+      "query": "DeviceEvents\n| where ActionType == \"OpenProcessApiCall\"\n// For OpenProcessApiCall, FileName is the TARGET process and\n// InitiatingProcessFileName is the accessor. AdditionalFields holds only\n// {DesiredAccess}, NOT TargetProcessName (confirmed via purple-team validation\n// 2026-07-04), so the old Fields.TargetProcessName filter silently never fired.\n| where FileName =~ \"lsass.exe\"\n| where InitiatingProcessFileName !in~ (\"MsMpEng.exe\", \"csrss.exe\", \"wininit.exe\", \"services.exe\", \"lsaiso.exe\", \"SecurityHealthSystray.exe\", \"WerFault.exe\", \"taskmgr.exe\", \"SenseIR.exe\")\n| extend DesiredAccess = tostring(parse_json(AdditionalFields).DesiredAccess)\n| project Timestamp, DeviceName, TargetProcess = FileName, InitiatingProcessFileName, InitiatingProcessCommandLine, DesiredAccess"
+    },
+    {
+      "id": "c2_named_pipe",
+      "displayName": "Known C2 Framework Named Pipe Created",
+      "description": "Detects creation of named pipes matching default patterns used by common C2 frameworks (Meterpreter, Cobalt Strike, postex, MSSE-). Ported from Sigma rule c2_named_pipe.yml (T1071).",
+      "severity": "high",
+      "queryFrequency": "PT1H",
+      "mitreTechniques": ["T1071"],
+      "category": "CommandAndControl",
+      "query": "DeviceEvents\n| where ActionType == \"NamedPipeEvent\"\n| extend Fields = parse_json(AdditionalFields)\n| where Fields.PipeName has_any (\"meterpreter\", \"beacon\", \"cobaltstrike\", \"msagent\", \"postex\", \"MSSE-\")\n| project Timestamp, DeviceName, AccountName, FileName, InitiatingProcessCommandLine, Fields"
+    },
+    {
+      "id": "remote_thread_injection",
+      "displayName": "Remote Thread Created in Sensitive System Process",
+      "description": "Detects CreateRemoteThread targeting lsass, winlogon, explorer, services, or svchost — a classic process injection and credential-theft primitive. Ported from Sigma rule remote_thread_injection.yml (T1055).",
+      "severity": "high",
+      "queryFrequency": "PT1H",
+      "mitreTechniques": ["T1055"],
+      "category": "DefenseEvasion",
+      "query": "DeviceEvents\n| where ActionType == \"CreateRemoteThreadApiCall\"\n// For CreateRemoteThreadApiCall, FileName is the TARGET process (where the thread\n// was created) and InitiatingProcessFileName is the injector. AdditionalFields\n// .TargetProcessName is empty for this ActionType (confirmed via purple-team\n// validation 2026-07-04), so filtering on it silently never fired.\n| where FileName in~ (\"lsass.exe\", \"winlogon.exe\", \"explorer.exe\", \"services.exe\", \"svchost.exe\")\n| where InitiatingProcessFileName !in~ (\"MsMpEng.exe\", \"WerFault.exe\", \"SenseIR.exe\", \"svchost.exe\")\n| project Timestamp, DeviceName, TargetProcess = FileName, InitiatingProcessFileName, InitiatingProcessCommandLine"
+    },
+    {
+      "id": "unsigned_dll_from_user_writable_path",
+      "displayName": "Unsigned DLL Loaded from User-Writable Path",
+      "description": "Detects loading of a DLL from a user-writable directory (Temp, AppData, Downloads) by a non-AV process — characteristic of DLL side-loading and injection from a staged payload. Ported from Sigma rule unsigned_dll_from_user_writable_path.yml (T1055.001). Note: DeviceImageLoadEvents does not expose signing status in this tenant; path-based heuristic used instead.",
+      "severity": "medium",
+      "queryFrequency": "PT1H",
+      "mitreTechniques": ["T1055"],
+      "category": "DefenseEvasion",
+      "query": "DeviceImageLoadEvents\n| where FolderPath has_any (@\"\\AppData\\\", @\"\\Temp\\\", @\"\\Downloads\\\")\n| where InitiatingProcessFileName !in~ (\"MsMpEng.exe\", \"SenseIR.exe\", \"msiexec.exe\", \"SgrmBroker.exe\")\n| project Timestamp, DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName, InitiatingProcessCommandLine, FileName, FolderPath, SHA256"
+    },
+    {
+      "id": "dns_query_suspicious_tld",
+      "displayName": "DNS Query to Suspicious Top-Level Domain",
+      "description": "Detects network connections on port 53 to destinations associated with TLDs disproportionately linked to malware C2 (.ru, .cn, .tk, .xyz, .top, .pw, .cc). Ported from Sigma rule dns_query_suspicious_tld.yml (T1071.004). DeviceDnsEvents is not available in this tenant; DeviceNetworkEvents with port 53 + RemoteUrl used instead.",
+      "severity": "low",
+      "queryFrequency": "PT3H",
+      "mitreTechniques": ["T1071"],
+      "category": "CommandAndControl",
+      "query": "DeviceNetworkEvents\n| where RemotePort == 53\n| where RemoteUrl has_any (\".ru\", \".cn\", \".tk\", \".xyz\", \".top\", \".pw\", \".cc\")\n| where InitiatingProcessFileName !in~ (\"svchost.exe\", \"MsMpEng.exe\", \"backgroundTaskHost.exe\", \"SearchIndexer.exe\")\n| project Timestamp, DeviceName, InitiatingProcessAccountName, RemoteUrl, RemoteIP, InitiatingProcessFileName, InitiatingProcessCommandLine"
+    }
+  ]
+}

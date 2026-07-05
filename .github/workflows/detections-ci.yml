@@ -1,0 +1,103 @@
+name: Detections CI
+
+# Validate detection-as-code on every PR and push. No cloud credentials
+# required — this gate runs entirely offline so it works on forks and PRs.
+
+on:
+  pull_request:
+    paths:
+      - 'detections/**'
+      - '.github/workflows/detections-ci.yml'
+  push:
+    branches-ignore: [main]
+    paths:
+      - 'detections/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sigma-validate:
+    name: Sigma rules valid
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install detection toolchain
+        run: pip install -r detections/requirements.txt
+      - name: sigma check (structure + validators)
+        run: sigma check detections/rules/windows detections/rules/custom
+
+  rules-in-sync:
+    name: analytics-rules.json is regenerated
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install detection toolchain
+        run: pip install -r detections/requirements.txt
+      - name: Regenerate from the Sigma source of truth
+        working-directory: detections/sentinel
+        run: python generate-rules.py
+      - name: Fail if the committed artifact is stale
+        run: |
+          if ! git diff --exit-code detections/sentinel/analytics-rules.json; then
+            echo "::error::analytics-rules.json is out of sync with the Sigma rules."
+            echo "Run 'python detections/sentinel/generate-rules.py' and commit the result."
+            exit 1
+          fi
+
+  bicep-validate:
+    name: Bicep compiles
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bicep
+        run: az bicep install
+      - name: Build every Bicep template (fails on compile errors)
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          fail=0
+          for f in detections/**/*.bicep; do
+            echo "::group::bicep build $f"
+            if ! az bicep build --file "$f" --stdout > /dev/null; then fail=1; fi
+            echo "::endgroup::"
+          done
+          exit $fail
+
+  defender-schema:
+    name: Defender custom-detections schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate required fields on every custom detection
+        run: |
+          python - <<'PY'
+          import json, sys
+          req = {"id","displayName","description","severity","queryFrequency",
+                 "mitreTechniques","category","query"}
+          sev = {"high","medium","low","informational"}
+          data = json.load(open("detections/defender/custom-detections.json"))
+          errs = []
+          for i, r in enumerate(data.get("rules", [])):
+              missing = req - r.keys()
+              if missing: errs.append(f"rule[{i}] {r.get('id','?')}: missing {sorted(missing)}")
+              if r.get("severity","").lower() not in sev:
+                  errs.append(f"rule[{i}] {r.get('id','?')}: bad severity '{r.get('severity')}'")
+              if not str(r.get("query","")).strip():
+                  errs.append(f"rule[{i}] {r.get('id','?')}: empty query")
+          if errs:
+              print("\n".join(f"::error::{e}" for e in errs)); sys.exit(1)
+          print(f"OK — {len(data.get('rules', []))} custom detections valid")
+          PY

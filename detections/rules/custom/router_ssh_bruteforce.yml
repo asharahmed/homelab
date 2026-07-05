@@ -1,0 +1,47 @@
+title: Router SSH Failed Login (Dropbear)
+id: a1f3c0de-2007-4b07-bb07-0d2e4f6a8d09
+name: router_ssh_failed
+status: experimental
+description: Detects a failed SSH authentication on the OpenWrt router's Dropbear daemon.
+references:
+  - https://attack.mitre.org/techniques/T1110/
+author: homelab detection engineering (ported from Wazuh rule 100660)
+date: 2026-06-29
+tags:
+  - attack.t1110
+# Custom syslog source (GL-BE9300 / OpenWrt Dropbear) — requires a field-mapping pipeline.
+logsource:
+  product: openwrt
+  service: dropbear
+detection:
+  selection:
+    message|contains:
+      - 'Bad password'
+      - 'Login attempt for nonexistent'
+  condition: selection
+falsepositives:
+  - Legitimate users mistyping credentials or keys
+level: medium
+---
+title: Router SSH Brute Force (Dropbear)
+id: a1f3c0de-2007-4b07-bb07-0d2e4f6a8d0a
+status: experimental
+description: >
+  Detects 5 or more failed SSH logins from the same source within 2 minutes on
+  the router's Dropbear daemon — brute force against the network edge device.
+references:
+  - https://attack.mitre.org/techniques/T1110/001/
+author: homelab detection engineering (ported from Wazuh rule 100661)
+date: 2026-06-29
+tags:
+  - attack.t1110.001
+correlation:
+  type: event_count
+  rules:
+    - router_ssh_failed
+  group-by:
+    - srcip
+  timespan: 2m
+  condition:
+    gte: 5
+level: high

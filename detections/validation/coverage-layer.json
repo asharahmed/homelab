@@ -1,0 +1,84 @@
+{
+  "name": "Homelab detection validation",
+  "versions": {
+    "navigator": "4.9.1",
+    "layer": "4.5",
+    "attack": "14"
+  },
+  "domain": "enterprise-attack",
+  "description": "Telemetry-level validation of deployed detections. Green=validated, Red=no visibility. 1/9 passing.",
+  "techniques": [
+    {
+      "techniqueID": "T1059.001",
+      "color": "#c62828",
+      "comment": "powershell_encoded_or_download: FAIL (0 events)",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1105",
+      "color": "#c62828",
+      "comment": "lolbin_network_connection: FAIL (0 events)",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1055.001",
+      "color": "#c62828",
+      "comment": "unsigned_dll_from_user_writable_path: FAIL (0 events)",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1003.001",
+      "color": "#2e7d32",
+      "comment": "lsass_credential_access: PASS (2 events)",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1055",
+      "color": "#c62828",
+      "comment": "remote_thread_injection: FAIL (0 events)",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1547.001",
+      "color": "#c62828",
+      "comment": "registry_run_key_persistence: FAIL (0 events)",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1071.004",
+      "color": "#c62828",
+      "comment": "dns_query_suspicious_tld: FAIL (0 events)",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1566.001",
+      "color": "#c62828",
+      "comment": "office_browser_spawns_lolbin: FAIL (0 events)",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1071",
+      "color": "#c62828",
+      "comment": "c2_named_pipe: FAIL (0 events)",
+      "enabled": true
+    }
+  ],
+  "gradient": {
+    "maxValue": 1,
+    "minValue": 0,
+    "colors": [
+      "#c62828",
+      "#2e7d32"
+    ]
+  },
+  "legendItems": [
+    {
+      "color": "#2e7d32",
+      "label": "Validated (telemetry present)"
+    },
+    {
+      "color": "#c62828",
+      "label": "No visibility (investigate)"
+    }
+  ]
+}

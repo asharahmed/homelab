@@ -1,0 +1,43 @@
+title: Suspicious Process Spawned by Office or Browser Application
+id: a1f3c0de-1001-4a01-8b01-0d2e4f6a8c01
+status: experimental
+description: >
+  Detects living-off-the-land binaries (powershell, cmd, wscript, mshta,
+  regsvr32, rundll32, certutil, bitsadmin, wmic) spawned by an Office
+  application or browser — a common phishing initial-access execution chain.
+references:
+  - https://attack.mitre.org/techniques/T1566/001/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1566.001/T1566.001.md  # test #2
+author: homelab detection engineering (ported from Wazuh rule 100501)
+date: 2026-06-29
+tags:
+  - attack.t1566.001
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\winword.exe'
+      - '\excel.exe'
+      - '\powerpnt.exe'
+      - '\outlook.exe'
+      - '\acrord32.exe'
+      - '\chrome.exe'
+      - '\firefox.exe'
+      - '\msedge.exe'
+    Image|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\regsvr32.exe'
+      - '\rundll32.exe'
+      - '\certutil.exe'
+      - '\bitsadmin.exe'
+      - '\wmic.exe'
+  condition: selection
+falsepositives:
+  - Office templates or browser helpers that legitimately launch script hosts
+level: high

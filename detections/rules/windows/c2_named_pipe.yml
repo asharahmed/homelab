@@ -1,0 +1,29 @@
+title: Known C2 Framework Named Pipe Created
+id: a1f3c0de-1007-4a07-ab07-0d2e4f6a8c07
+status: experimental
+description: >
+  Detects creation of named pipes matching default patterns used by common
+  command-and-control frameworks (Meterpreter, Cobalt Strike beacon, postex,
+  MSSE-). Default pipe names are a strong post-exploitation indicator.
+references:
+  - https://attack.mitre.org/techniques/T1071/
+author: homelab detection engineering (ported from Wazuh rule 100570)
+date: 2026-06-29
+tags:
+  - attack.t1071
+logsource:
+  category: pipe_created
+  product: windows
+detection:
+  selection:
+    PipeName|contains:
+      - 'meterpreter'
+      - 'beacon'
+      - 'cobaltstrike'
+      - 'msagent'
+      - 'postex'
+      - 'MSSE-'
+  condition: selection
+falsepositives:
+  - Rare; these pipe-name fragments are strongly associated with offensive tooling
+level: critical

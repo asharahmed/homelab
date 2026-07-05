@@ -1,0 +1,32 @@
+title: PowerShell Encoded or Download Command
+id: a1f3c0de-1002-4a02-9b02-0d2e4f6a8c02
+status: experimental
+description: >
+  Detects encoded PowerShell command lines and in-memory download/execution
+  patterns (FromBase64String, IEX, DownloadString, DownloadFile, BITS transfer)
+  commonly used to stage and run payloads.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1059.001/T1059.001.md  # tests #15, #1
+author: homelab detection engineering (ported from Wazuh rule 100502)
+date: 2026-06-29
+tags:
+  - attack.t1059.001
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains:
+      - '-enc'
+      - '-encodedcommand'
+      - 'frombase64string'
+      - 'iex '
+      - 'invoke-expression'
+      - 'downloadstring'
+      - 'downloadfile'
+      - 'bitstransfer'
+  condition: selection
+falsepositives:
+  - Administrative or deployment scripts that legitimately use encoded commands
+level: critical

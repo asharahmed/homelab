@@ -1,0 +1,34 @@
+title: Executable or Script Dropped in User-Writable Path
+id: a1f3c0de-100a-4a0a-9b0a-0d2e4f6a8c0a
+status: experimental
+description: >
+  Detects creation of executable or script files (.exe, .dll, .ps1, .bat,
+  .vbs, .hta, .js) in user-writable staging directories (Temp, Downloads,
+  AppData\Roaming) — characteristic of payload staging / ingress tool transfer.
+references:
+  - https://attack.mitre.org/techniques/T1105/
+author: homelab detection engineering (ported from Wazuh rule 100550)
+date: 2026-06-29
+tags:
+  - attack.t1105
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains:
+      - '\temp\'
+      - '\downloads\'
+      - '\appdata\roaming\'
+    TargetFilename|endswith:
+      - '.exe'
+      - '.dll'
+      - '.ps1'
+      - '.bat'
+      - '.vbs'
+      - '.hta'
+      - '.js'
+  condition: selection
+falsepositives:
+  - Software installers and updaters that stage payloads in these directories
+level: medium

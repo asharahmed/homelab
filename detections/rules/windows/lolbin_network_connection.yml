@@ -1,0 +1,31 @@
+title: Script Host or LOLBin Making Network Connection
+id: a1f3c0de-1003-4a03-ab03-0d2e4f6a8c03
+status: experimental
+description: >
+  Detects script interpreters and living-off-the-land binaries initiating
+  network connections — frequently command-and-control or remote payload
+  retrieval rather than benign activity.
+references:
+  - https://attack.mitre.org/techniques/T1071/001/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1105/T1105.md  # test #7 (certutil) triggers a LOLBin network connection
+author: homelab detection engineering (ported from Wazuh rule 100510)
+date: 2026-06-29
+tags:
+  - attack.t1071.001
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\regsvr32.exe'
+      - '\rundll32.exe'
+      - '\certutil.exe'
+  condition: selection
+falsepositives:
+  - Signed administrative scripts that fetch updates or telemetry
+level: high

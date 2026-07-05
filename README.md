@@ -16,6 +16,8 @@ This repository is a sanitized public mirror of an internal homelab environment 
 
 Its purpose is to document the architecture, ingress model, observability stack, and security workflow of the environment without exposing private implementation details, runtime state, or sensitive configuration.
 
+The security operations side of this environment was migrated off self-hosted tooling onto Microsoft Sentinel, Defender XDR, and Intune, deployed and validated entirely as code. See the [Detection Engineering](#detection-engineering) section below.
+
 The emphasis is on system design and operational discipline rather than service count.
 
 ## Design Priorities
@@ -23,6 +25,7 @@ The emphasis is on system design and operational discipline rather than service 
 - centralized ingress and controlled exposure
 - consistent authentication in front of sensitive services
 - integrated metrics, logs, alerting, and security telemetry
+- detections and cloud security config defined as code, validated in CI
 - reduced secret sprawl and repeatable configuration workflows
 - documentation that explains the structure and operating model of the platform
 
@@ -44,8 +47,10 @@ The emphasis is on system design and operational discipline rather than service 
 
 **Security**
 - CrowdSec
-- Wazuh
-- Velociraptor
+- Microsoft Sentinel
+- Microsoft Defender XDR / Defender for Endpoint
+- Microsoft Intune
+- Microsoft Defender for Cloud
 - Trivy
 - Renovate
 
@@ -53,6 +58,18 @@ The emphasis is on system design and operational discipline rather than service 
 - Infisical
 - OpenTofu / Terraform
 - Docker Compose
+
+## Detection Engineering
+
+Detections are written as Sigma rules, checked into this repository's private counterpart, and compiled into Sentinel analytics rules and Defender custom detections through GitHub Actions:
+
+- Sigma validation, a rules-in-sync check, Bicep build, and schema checks run on every pull request
+- OIDC deploy to Azure on merge, with no stored cloud credentials
+- main is branch-protected
+
+Detections are continuously exercised, not just written once. An isolated, MDE-onboarded detonation-range VM runs Atomic Red Team techniques on a schedule, and a validation loop confirms via Defender advanced hunting that the matching detection actually fired, emitting an ATT&CK Navigator coverage layer after each run.
+
+On its first run, that validation loop caught two real bugs: two custom detections filtered on `AdditionalFields.TargetProcessName`, a field that Defender leaves empty for the `CreateRemoteThreadApiCall` and `OpenProcessApiCall` action types — the target process is actually in `FileName`. Both detections would have silently never fired. Code review had missed it; the validation harness caught it on the first pass.
 
 ## Public Repository Contents
 

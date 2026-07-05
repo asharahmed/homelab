@@ -1,0 +1,27 @@
+title: Privileged Docker Container Started
+id: a1f3c0de-2003-4b03-ab03-0d2e4f6a8d03
+status: experimental
+description: >
+  Detects a container starting with the privileged flag set. Privileged
+  containers disable most isolation and are a common container-escape /
+  host-compromise primitive.
+references:
+  - https://attack.mitre.org/techniques/T1611/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1611/T1611.md  # test #2
+author: homelab detection engineering (ported from Wazuh rule 100404)
+date: 2026-06-29
+tags:
+  - attack.t1611
+# Custom JSON log source (Docker daemon events) — requires pipelines/homelab-custom.yml.
+logsource:
+  product: docker
+  service: daemon
+detection:
+  selection:
+    Type: 'container'
+    Action: 'start'
+    privileged: 'true'
+  condition: selection
+falsepositives:
+  - Intentionally privileged infrastructure containers (document and allowlist these)
+level: high

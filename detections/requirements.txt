@@ -1,0 +1,10 @@
+# Detection-as-Code toolchain.
+# Pinned exactly so CI reproduces byte-identical KQL and the rules-in-sync
+# gate stays reliable. Bump deliberately, regenerate analytics-rules.json,
+# and commit the two together.
+sigma-cli==3.0.3
+pysigma==1.4.0
+pysigma-backend-splunk==2.1.0
+pysigma-backend-kusto==1.0.1
+pysigma-pipeline-sysmon==2.0.0
+PyYAML>=6.0          # used by sentinel/generate-rules.py to read rule metadata

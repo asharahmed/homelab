@@ -1,0 +1,28 @@
+title: Unsigned DLL Loaded from User-Writable Path
+id: a1f3c0de-1004-4a04-bb04-0d2e4f6a8c04
+status: experimental
+description: >
+  Detects loading of an unsigned DLL from a user-writable directory
+  (Temp, AppData, Downloads) — characteristic of DLL side-loading and
+  injection from a staged payload.
+references:
+  - https://attack.mitre.org/techniques/T1055/001/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1055.001/T1055.001.md  # test #1
+author: homelab detection engineering (ported from Wazuh rule 100520)
+date: 2026-06-29
+tags:
+  - attack.t1055.001
+logsource:
+  category: image_load
+  product: windows
+detection:
+  selection:
+    Signed: 'false'
+    ImageLoaded|contains:
+      - '\temp\'
+      - '\appdata\'
+      - '\downloads\'
+  condition: selection
+falsepositives:
+  - Some legitimate applications ship unsigned DLLs in per-user install dirs
+level: medium

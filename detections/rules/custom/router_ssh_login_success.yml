@@ -1,0 +1,25 @@
+title: Router SSH Login Succeeded (Dropbear)
+id: a1f3c0de-200a-4b0a-ab0a-0d2e4f6a8d0e
+status: experimental
+description: >
+  Audit detection for a successful SSH login to the OpenWrt router's Dropbear
+  daemon. Successful authentication to an edge network device is worth tracking
+  on its own and is high-value when correlated with preceding failed attempts
+  (see router_ssh_bruteforce) to surface a successful brute force.
+references:
+  - https://attack.mitre.org/techniques/T1078/
+author: homelab detection engineering (ported from Wazuh rule 100662)
+date: 2026-06-29
+tags:
+  - attack.t1078
+# Custom syslog source (GL-BE9300 / OpenWrt Dropbear) — requires a field-mapping pipeline.
+logsource:
+  product: openwrt
+  service: dropbear
+detection:
+  selection:
+    message|contains: 'auth succeeded'
+  condition: selection
+falsepositives:
+  - Routine administrative SSH access to the router
+level: informational

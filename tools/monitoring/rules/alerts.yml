@@ -152,35 +152,6 @@ groups:
           summary: "Watchdog"
           description: "Deadman alert to verify the Prometheus to Alertmanager notification pipeline."
 
-  - name: media
-    rules:
-      - alert: MediaDiskLowMovies
-        expr: radarr_rootfolder_freespace_bytes < 50 * 1024 * 1024 * 1024
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Low disk space for movies"
-          description: "Free space on the movies root is below 50 GB."
-
-      - alert: MediaDiskLowTV
-        expr: sonarr_rootfolder_freespace_bytes < 50 * 1024 * 1024 * 1024
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Low disk space for TV"
-          description: "Free space on the TV root is below 50 GB."
-
-      - alert: ArrHealthErrors
-        expr: (radarr_system_health_issues{type="error"} > 0) or (sonarr_system_health_issues{type="error"} > 0)
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Arr health errors"
-          description: "Radarr/Sonarr reports health errors that may block imports."
-
   - name: router
     rules:
       - alert: RouterReboot

@@ -1,0 +1,229 @@
+{
+  "name": "Homelab Detection Coverage",
+  "versions": {
+    "attack": "16",
+    "navigator": "5.1.0",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "MITRE ATT&CK coverage for the homelab detection-as-code library. Each colored technique has one or more Sigma rules under detections/rules/. Score = highest severity of the rules covering that technique (1=informational, 2=low, 3=medium, 4=high, 5=critical). Generated from rule attack.tXXXX tags.",
+  "filters": {
+    "platforms": [
+      "Windows",
+      "Linux",
+      "Network",
+      "Containers"
+    ]
+  },
+  "sorting": 0,
+  "layout": {
+    "layout": "side",
+    "aggregateFunction": "average",
+    "showID": false,
+    "showName": true,
+    "showAggregateScores": false,
+    "countUnscored": false
+  },
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1003.001",
+      "score": 4,
+      "color": "",
+      "comment": "Credential Access Attempt Against LSASS — 1 rule, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "lsass_credential_access.yml" }
+      ],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1055",
+      "score": 4,
+      "color": "",
+      "comment": "Remote Thread Created in Sensitive System Process — 1 rule, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "remote_thread_injection.yml" }
+      ],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1055.001",
+      "score": 3,
+      "color": "",
+      "comment": "Unsigned DLL Loaded from User-Writable Path — 1 rule, max severity medium",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "unsigned_dll_from_user_writable_path.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1059.001",
+      "score": 5,
+      "color": "",
+      "comment": "PowerShell Encoded or Download Command — 1 rule, max severity critical",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "powershell_encoded_or_download.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1071",
+      "score": 5,
+      "color": "",
+      "comment": "Known C2 Framework Named Pipe Created — 1 rule, max severity critical",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "c2_named_pipe.yml" }
+      ],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1071.001",
+      "score": 4,
+      "color": "",
+      "comment": "Script Host or LOLBin Making Network Connection — 1 rule, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "lolbin_network_connection.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1071.004",
+      "score": 2,
+      "color": "",
+      "comment": "DNS Query to Suspicious Top-Level Domain — 1 rule, max severity low (hunting/correlation)",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "dns_query_suspicious_tld.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1078",
+      "score": 4,
+      "color": "",
+      "comment": "Authelia Bypass-Token Header + Router SSH Login Success — 2 rules, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "caddy_bypass_token_header.yml, router_ssh_login_success.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1105",
+      "score": 3,
+      "color": "",
+      "comment": "Executable or Script Dropped in User-Writable Path — 1 rule, max severity medium",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "executable_dropped_in_user_writable_path.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1110",
+      "score": 4,
+      "color": "",
+      "comment": "Failed-auth / credential-stuffing detections across Authelia, Caddy, and router SSH — 5 rules, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "authelia_1fa_bruteforce.yml, authelia_totp_bruteforce.yml, caddy_credential_stuffing.yml, router_ssh_bruteforce.yml" }
+      ],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1110.001",
+      "score": 4,
+      "color": "",
+      "comment": "Password-guessing brute force (rate-correlated) across Authelia and router SSH — 3 rules, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "authelia_1fa_bruteforce.yml, authelia_totp_bruteforce.yml, router_ssh_bruteforce.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1547.001",
+      "score": 4,
+      "color": "",
+      "comment": "Registry Autostart Persistence Key Modified — 1 rule, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "registry_run_key_persistence.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1566.001",
+      "score": 4,
+      "color": "",
+      "comment": "Suspicious Process Spawned by Office or Browser — 1 rule, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "office_browser_spawns_lolbin.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1595",
+      "score": 3,
+      "color": "",
+      "comment": "Caddy 4xx scanner / content-discovery burst — 2 rules, max severity medium",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "caddy_4xx_scanner_burst.yml" }
+      ],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1595.003",
+      "score": 4,
+      "color": "",
+      "comment": "Sensitive Path Probing via Reverse Proxy — 1 rule, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "caddy_sensitive_path_probe.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1609",
+      "score": 3,
+      "color": "",
+      "comment": "Interactive Exec Session in Docker Container — 1 rule, max severity medium",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "docker_container_exec.yml" }
+      ]
+    },
+    {
+      "techniqueID": "T1611",
+      "score": 4,
+      "color": "",
+      "comment": "Privileged Docker Container Started — 1 rule, max severity high",
+      "enabled": true,
+      "metadata": [
+        { "name": "rules", "value": "docker_privileged_container_start.yml" }
+      ]
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#fff5b1",
+      "#ffb84d",
+      "#d83933"
+    ],
+    "minValue": 1,
+    "maxValue": 5
+  },
+  "legendItems": [
+    { "label": "1 — informational", "color": "#fff5b1" },
+    { "label": "3 — medium", "color": "#ffb84d" },
+    { "label": "5 — critical", "color": "#d83933" }
+  ],
+  "metadata": [
+    { "name": "source", "value": "detections/rules/ (Sigma)" },
+    { "name": "techniques covered", "value": "17 (10 base + 7 sub-techniques)" },
+    { "name": "rule count", "value": "20 detection rules" },
+    { "name": "tactics touched", "value": "Reconnaissance, Initial Access, Execution, Persistence, Defense Evasion, Credential Access, Discovery, Command and Control" }
+  ],
+  "showTacticRowBackground": false,
+  "tacticRowBackground": "#dddddd",
+  "selectTechniquesAcrossTactics": true,
+  "selectSubtechniquesWithParent": false
+}

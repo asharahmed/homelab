@@ -1,0 +1,29 @@
+title: Sensitive Path Probing via Reverse Proxy
+id: a1f3c0de-2001-4b01-8b01-0d2e4f6a8d01
+status: experimental
+description: >
+  Detects requests through the Caddy reverse proxy probing for sensitive files
+  and admin paths (.env, .git, wp-admin, /etc/passwd, cloud/SSH keys) —
+  reconnaissance and exposure-hunting against exposed web services.
+references:
+  - https://attack.mitre.org/techniques/T1595/003/
+author: homelab detection engineering (ported from Wazuh rule 100201)
+date: 2026-06-29
+tags:
+  - attack.t1595.003
+# Custom JSON log source — requires pipelines/homelab-custom.yml for field mapping.
+logsource:
+  category: webserver
+detection:
+  selection:
+    c-uri|contains:
+      - '.env'
+      - '.git'
+      - 'wp-admin'
+      - 'etc/passwd'
+      - '.aws/'
+      - '.ssh/'
+  condition: selection
+falsepositives:
+  - Security scanners you operate; legitimate references to these strings in paths
+level: high

@@ -1,0 +1,45 @@
+title: Caddy 4xx Client Error Response
+id: a1f3c0de-2008-4b08-8b08-0d2e4f6a8d0b
+name: caddy_4xx_response
+status: experimental
+description: Detects any 4xx client-error response from the Caddy reverse proxy.
+references:
+  - https://attack.mitre.org/techniques/T1595/
+author: homelab detection engineering (ported from Wazuh rule 100202)
+date: 2026-06-29
+tags:
+  - attack.t1595
+# Custom JSON log source — requires pipelines/homelab-custom.yml for field mapping.
+logsource:
+  category: webserver
+detection:
+  selection:
+    sc-status|re: '^4[0-9]{2}$'
+  condition: selection
+falsepositives:
+  - Normal browsing producing 404s for missing assets
+level: informational
+---
+title: Caddy 4xx Burst - Possible Scanner or Content Discovery
+id: a1f3c0de-2008-4b08-8b08-0d2e4f6a8d0c
+status: experimental
+description: >
+  Detects 10 or more 4xx responses from the same client IP within 1 minute
+  through the reverse proxy — automated scanning, content discovery, or
+  vulnerability probing against published services.
+references:
+  - https://attack.mitre.org/techniques/T1595/
+author: homelab detection engineering (ported from Wazuh rule 100203)
+date: 2026-06-29
+tags:
+  - attack.t1595
+correlation:
+  type: event_count
+  rules:
+    - caddy_4xx_response
+  group-by:
+    - c-ip
+  timespan: 1m
+  condition:
+    gte: 10
+level: medium

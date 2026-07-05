@@ -1,0 +1,29 @@
+title: Registry Autostart Persistence Key Modified
+id: a1f3c0de-1006-4a06-9b06-0d2e4f6a8c06
+status: experimental
+description: >
+  Detects modification of common registry autostart/persistence locations
+  (Run keys, Winlogon, Image File Execution Options, AppInit_DLLs,
+  AppCertDLLs) used to survive reboot or hijack execution.
+references:
+  - https://attack.mitre.org/techniques/T1547/001/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1547.001/T1547.001.md  # tests #1, #16
+author: homelab detection engineering (ported from Wazuh rule 100560)
+date: 2026-06-29
+tags:
+  - attack.t1547.001
+logsource:
+  category: registry_set
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - 'CurrentVersion\Run'
+      - 'Winlogon'
+      - 'Image File Execution'
+      - 'AppInit_DLL'
+      - 'AppCertDll'
+  condition: selection
+falsepositives:
+  - Installers and management tooling that legitimately register autostart entries
+level: high

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.44.1.10279",
+      "templateHash": "16965249452582564573"
+    }
+  },
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "workbookDisplayName": {
+      "type": "string",
+      "defaultValue": "Homelab Security Operations"
+    }
+  },
+  "variables": {
+    "$fxv#0": "{\r\n  \"version\": \"Notebook/1.0\",\r\n  \"items\": [\r\n    {\r\n      \"type\": 1,\r\n      \"content\": {\r\n        \"json\": \"# Homelab Security Operations\\n\\nDetection-engineering metrics across **Microsoft Sentinel + Defender XDR**. Everything below is deployed **as code** (Sigma -> CI/CD -> Sentinel/Defender): 5 scheduled analytics rules, 5 Defender custom detections, a SOAR notification playbook, and 3 threat-intelligence feeds. Use the time range to scope the incident/alert tiles.\"\r\n      },\r\n      \"name\": \"title\"\r\n    },\r\n    {\r\n      \"type\": 9,\r\n      \"content\": {\r\n        \"version\": \"KqlParameterItem/1.0\",\r\n        \"parameters\": [\r\n          {\r\n            \"id\": \"tr\",\r\n            \"version\": \"KqlParameterItem/1.0\",\r\n            \"name\": \"TimeRange\",\r\n            \"label\": \"Time range\",\r\n            \"type\": 4,\r\n            \"value\": { \"durationMs\": 2592000000 },\r\n            \"typeSettings\": {\r\n              \"selectableValues\": [\r\n                { \"durationMs\": 86400000 },\r\n                { \"durationMs\": 604800000 },\r\n                { \"durationMs\": 2592000000 },\r\n                { \"durationMs\": 7776000000 }\r\n              ]\r\n            }\r\n          }\r\n        ],\r\n        \"style\": \"pills\"\r\n      },\r\n      \"name\": \"parameters\"\r\n    },\r\n    {\r\n      \"type\": 1,\r\n      \"content\": { \"json\": \"## Overview\" },\r\n      \"name\": \"h-overview\"\r\n    },\r\n    {\r\n      \"type\": 3,\r\n      \"content\": {\r\n        \"version\": \"KqlItem/1.0\",\r\n        \"query\": \"union isfuzzy=true\\n (SecurityIncident | summarize Value = dcount(IncidentNumber) | extend Name = 'Incidents'),\\n (SecurityIncident | where Status != 'Closed' | summarize Value = dcount(IncidentNumber) | extend Name = 'Open incidents'),\\n (SecurityAlert | summarize Value = count() | extend Name = 'Alerts'),\\n (ThreatIntelIndicators | summarize Value = count() | extend Name = 'TI indicators')\\n| project Name, Value\",\r\n        \"size\": 3,\r\n        \"timeContextFromParameter\": \"TimeRange\",\r\n        \"queryType\": 0,\r\n        \"resourceType\": \"microsoft.operationalinsights/workspaces\",\r\n        \"visualization\": \"tiles\",\r\n        \"tileSettings\": {\r\n          \"titleContent\": { \"columnMatch\": \"Name\", \"formatter\": 1 },\r\n          \"leftContent\": {\r\n            \"columnMatch\": \"Value\",\r\n            \"formatter\": 12,\r\n            \"formatOptions\": { \"palette\": \"blue\" }\r\n          },\r\n          \"showBorder\": true\r\n        }\r\n      },\r\n      \"name\": \"overview-tiles\"\r\n    },\r\n    {\r\n      \"type\": 1,\r\n      \"content\": { \"json\": \"## Detections firing\" },\r\n      \"name\": \"h-detections\"\r\n    },\r\n    {\r\n      \"type\": 3,\r\n      \"content\": {\r\n        \"version\": \"KqlItem/1.0\",\r\n        \"query\": \"SecurityAlert\\n| extend Tactic = split(tostring(Tactics), ',')\\n| mv-expand Tactic to typeof(string)\\n| extend Tactic = trim(' ', Tactic)\\n| where isnotempty(Tactic)\\n| summarize Alerts = count() by Tactic\\n| order by Alerts desc\",\r\n        \"size\": 1,\r\n        \"title\": \"Alerts by ATT&CK tactic\",\r\n        \"timeContextFromParameter\": \"TimeRange\",\r\n        \"queryType\": 0,\r\n        \"resourceType\": \"microsoft.operationalinsights/workspaces\",\r\n        \"visualization\": \"barchart\"\r\n      },\r\n      \"customWidth\": \"50\",\r\n      \"name\": \"alerts-by-tactic\"\r\n    },\r\n    {\r\n      \"type\": 3,\r\n      \"content\": {\r\n        \"version\": \"KqlItem/1.0\",\r\n        \"query\": \"SecurityAlert\\n| summarize Alerts = count(), LastSeen = max(TimeGenerated) by Detection = AlertName, Severity = AlertSeverity\\n| order by Alerts desc\",\r\n        \"size\": 1,\r\n        \"title\": \"Alerts by detection\",\r\n        \"timeContextFromParameter\": \"TimeRange\",\r\n        \"queryType\": 0,\r\n        \"resourceType\": \"microsoft.operationalinsights/workspaces\",\r\n        \"visualization\": \"table\",\r\n        \"gridSettings\": {\r\n          \"formatters\": [\r\n            { \"columnMatch\": \"Alerts\", \"formatter\": 8, \"formatOptions\": { \"palette\": \"blue\" } },\r\n            { \"columnMatch\": \"Severity\", \"formatter\": 18, \"formatOptions\": { \"thresholdsOptions\": \"colors\", \"thresholdsGrid\": [\r\n              { \"operator\": \"==\", \"thresholdValue\": \"High\", \"representation\": \"redBright\", \"text\": \"{0}{1}\" },\r\n              { \"operator\": \"==\", \"thresholdValue\": \"Medium\", \"representation\": \"orange\", \"text\": \"{0}{1}\" },\r\n              { \"operator\": \"Default\", \"representation\": \"gray\", \"text\": \"{0}{1}\" }\r\n            ] } }\r\n          ]\r\n        }\r\n      },\r\n      \"customWidth\": \"50\",\r\n      \"name\": \"alerts-by-detection\"\r\n    },\r\n    {\r\n      \"type\": 1,\r\n      \"content\": { \"json\": \"## Incidents\" },\r\n      \"name\": \"h-incidents\"\r\n    },\r\n    {\r\n      \"type\": 3,\r\n      \"content\": {\r\n        \"version\": \"KqlItem/1.0\",\r\n        \"query\": \"SecurityIncident\\n| summarize arg_max(TimeGenerated, Severity) by IncidentNumber\\n| summarize Incidents = count() by Severity, bin(TimeGenerated, 1d)\\n| order by TimeGenerated asc\",\r\n        \"size\": 1,\r\n        \"title\": \"Incidents over time by severity\",\r\n        \"timeContextFromParameter\": \"TimeRange\",\r\n        \"queryType\": 0,\r\n        \"resourceType\": \"microsoft.operationalinsights/workspaces\",\r\n        \"visualization\": \"barchart\",\r\n        \"chartSettings\": { \"group\": \"Severity\", \"createOtherGroup\": 0 }\r\n      },\r\n      \"customWidth\": \"50\",\r\n      \"name\": \"incidents-trend\"\r\n    },\r\n    {\r\n      \"type\": 3,\r\n      \"content\": {\r\n        \"version\": \"KqlItem/1.0\",\r\n        \"query\": \"SecurityIncident\\n| summarize arg_max(TimeGenerated, *) by IncidentNumber\\n| summarize Incidents = count() by Severity, Status\",\r\n        \"size\": 1,\r\n        \"title\": \"Incidents by severity & status\",\r\n        \"timeContextFromParameter\": \"TimeRange\",\r\n        \"queryType\": 0,\r\n        \"resourceType\": \"microsoft.operationalinsights/workspaces\",\r\n        \"visualization\": \"table\"\r\n      },\r\n      \"customWidth\": \"50\",\r\n      \"name\": \"incidents-status\"\r\n    },\r\n    {\r\n      \"type\": 1,\r\n      \"content\": { \"json\": \"## Threat intelligence feed health\\n\\nThree feeds ingested as code: **MDTI** (connector), **AlienVault OTX** (TAXII), **abuse.ch ThreatFox** (STIX upload pipeline).\" },\r\n      \"name\": \"h-ti\"\r\n    },\r\n    {\r\n      \"type\": 3,\r\n      \"content\": {\r\n        \"version\": \"KqlItem/1.0\",\r\n        \"query\": \"ThreatIntelIndicators\\n| summarize Indicators = count() by Feed = SourceSystem\\n| order by Indicators desc\",\r\n        \"size\": 1,\r\n        \"title\": \"Indicators by feed\",\r\n        \"timeContextFromParameter\": \"TimeRange\",\r\n        \"queryType\": 0,\r\n        \"resourceType\": \"microsoft.operationalinsights/workspaces\",\r\n        \"visualization\": \"piechart\"\r\n      },\r\n      \"customWidth\": \"50\",\r\n      \"name\": \"ti-by-feed\"\r\n    },\r\n    {\r\n      \"type\": 3,\r\n      \"content\": {\r\n        \"version\": \"KqlItem/1.0\",\r\n        \"query\": \"ThreatIntelIndicators\\n| where isnotempty(ObservableKey)\\n| summarize Indicators = count() by Type = tostring(ObservableKey)\\n| order by Indicators desc\\n| take 10\",\r\n        \"size\": 1,\r\n        \"title\": \"Indicator types (top 10)\",\r\n        \"timeContextFromParameter\": \"TimeRange\",\r\n        \"queryType\": 0,\r\n        \"resourceType\": \"microsoft.operationalinsights/workspaces\",\r\n        \"visualization\": \"barchart\"\r\n      },\r\n      \"customWidth\": \"50\",\r\n      \"name\": \"ti-by-type\"\r\n    }\r\n  ],\r\n  \"$schema\": \"https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json\"\r\n}\r\n"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/workbooks",
+      "apiVersion": "2023-06-01",
+      "name": "[guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), parameters('workbookDisplayName'))]",
+      "location": "[parameters('location')]",
+      "kind": "shared",
+      "properties": {
+        "displayName": "[parameters('workbookDisplayName')]",
+        "serializedData": "[variables('$fxv#0')]",
+        "version": "1.0",
+        "sourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]",
+        "category": "sentinel"
+      }
+    }
+  ],
+  "outputs": {
+    "workbookId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Insights/workbooks', guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), parameters('workbookDisplayName')))]"
+    },
+    "workbookName": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Insights/workbooks', guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), parameters('workbookDisplayName'))), '2023-06-01').displayName]"
+    }
+  }
+}

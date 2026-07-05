@@ -1,0 +1,94 @@
+{
+  "rules": [
+    {
+      "name": "a1f3c0de-100a-4a0a-9b0a-0d2e4f6a8c0a",
+      "displayName": "Executable or Script Dropped in User-Writable Path",
+      "description": "Detects creation of executable or script files (.exe, .dll, .ps1, .bat, .vbs, .hta, .js) in user-writable staging directories (Temp, Downloads, AppData\\Roaming) \u2014 characteristic of payload staging / ingress tool transfer.",
+      "severity": "Medium",
+      "query": "DeviceFileEvents\n| where (FolderPath contains \"\\\\temp\\\\\" or FolderPath contains \"\\\\downloads\\\\\" or FolderPath contains \"\\\\appdata\\\\roaming\\\\\") and (FolderPath endswith \".exe\" or FolderPath endswith \".dll\" or FolderPath endswith \".ps1\" or FolderPath endswith \".bat\" or FolderPath endswith \".vbs\" or FolderPath endswith \".hta\" or FolderPath endswith \".js\")",
+      "queryFrequency": "PT1H",
+      "queryPeriod": "PT1H",
+      "triggerOperator": "GreaterThan",
+      "triggerThreshold": 0,
+      "tactics": [
+        "CommandAndControl"
+      ],
+      "techniques": [
+        "T1105"
+      ],
+      "sourceRule": "executable_dropped_in_user_writable_path.yml"
+    },
+    {
+      "name": "a1f3c0de-1003-4a03-ab03-0d2e4f6a8c03",
+      "displayName": "Script Host or LOLBin Making Network Connection",
+      "description": "Detects script interpreters and living-off-the-land binaries initiating network connections \u2014 frequently command-and-control or remote payload retrieval rather than benign activity.",
+      "severity": "High",
+      "query": "DeviceNetworkEvents\n| where InitiatingProcessFolderPath endswith \"\\\\powershell.exe\" or InitiatingProcessFolderPath endswith \"\\\\wscript.exe\" or InitiatingProcessFolderPath endswith \"\\\\cscript.exe\" or InitiatingProcessFolderPath endswith \"\\\\mshta.exe\" or InitiatingProcessFolderPath endswith \"\\\\regsvr32.exe\" or InitiatingProcessFolderPath endswith \"\\\\rundll32.exe\" or InitiatingProcessFolderPath endswith \"\\\\certutil.exe\"",
+      "queryFrequency": "PT1H",
+      "queryPeriod": "PT1H",
+      "triggerOperator": "GreaterThan",
+      "triggerThreshold": 0,
+      "tactics": [
+        "CommandAndControl"
+      ],
+      "techniques": [
+        "T1071"
+      ],
+      "sourceRule": "lolbin_network_connection.yml"
+    },
+    {
+      "name": "a1f3c0de-1001-4a01-8b01-0d2e4f6a8c01",
+      "displayName": "Suspicious Process Spawned by Office or Browser Application",
+      "description": "Detects living-off-the-land binaries (powershell, cmd, wscript, mshta, regsvr32, rundll32, certutil, bitsadmin, wmic) spawned by an Office application or browser \u2014 a common phishing initial-access execution chain.",
+      "severity": "High",
+      "query": "DeviceProcessEvents\n| where (InitiatingProcessFolderPath endswith \"\\\\winword.exe\" or InitiatingProcessFolderPath endswith \"\\\\excel.exe\" or InitiatingProcessFolderPath endswith \"\\\\powerpnt.exe\" or InitiatingProcessFolderPath endswith \"\\\\outlook.exe\" or InitiatingProcessFolderPath endswith \"\\\\acrord32.exe\" or InitiatingProcessFolderPath endswith \"\\\\chrome.exe\" or InitiatingProcessFolderPath endswith \"\\\\firefox.exe\" or InitiatingProcessFolderPath endswith \"\\\\msedge.exe\") and (FolderPath endswith \"\\\\powershell.exe\" or FolderPath endswith \"\\\\cmd.exe\" or FolderPath endswith \"\\\\wscript.exe\" or FolderPath endswith \"\\\\cscript.exe\" or FolderPath endswith \"\\\\mshta.exe\" or FolderPath endswith \"\\\\regsvr32.exe\" or FolderPath endswith \"\\\\rundll32.exe\" or FolderPath endswith \"\\\\certutil.exe\" or FolderPath endswith \"\\\\bitsadmin.exe\" or FolderPath endswith \"\\\\wmic.exe\")",
+      "queryFrequency": "PT1H",
+      "queryPeriod": "PT1H",
+      "triggerOperator": "GreaterThan",
+      "triggerThreshold": 0,
+      "tactics": [
+        "InitialAccess"
+      ],
+      "techniques": [
+        "T1566"
+      ],
+      "sourceRule": "office_browser_spawns_lolbin.yml"
+    },
+    {
+      "name": "a1f3c0de-1002-4a02-9b02-0d2e4f6a8c02",
+      "displayName": "PowerShell Encoded or Download Command",
+      "description": "Detects encoded PowerShell command lines and in-memory download/execution patterns (FromBase64String, IEX, DownloadString, DownloadFile, BITS transfer) commonly used to stage and run payloads.",
+      "severity": "High",
+      "query": "DeviceProcessEvents\n| where ProcessCommandLine contains \"-enc\" or ProcessCommandLine contains \"-encodedcommand\" or ProcessCommandLine contains \"frombase64string\" or ProcessCommandLine contains \"iex \" or ProcessCommandLine contains \"invoke-expression\" or ProcessCommandLine contains \"downloadstring\" or ProcessCommandLine contains \"downloadfile\" or ProcessCommandLine contains \"bitstransfer\"",
+      "queryFrequency": "PT1H",
+      "queryPeriod": "PT1H",
+      "triggerOperator": "GreaterThan",
+      "triggerThreshold": 0,
+      "tactics": [
+        "Execution"
+      ],
+      "techniques": [
+        "T1059"
+      ],
+      "sourceRule": "powershell_encoded_or_download.yml"
+    },
+    {
+      "name": "a1f3c0de-1006-4a06-9b06-0d2e4f6a8c06",
+      "displayName": "Registry Autostart Persistence Key Modified",
+      "description": "Detects modification of common registry autostart/persistence locations (Run keys, Winlogon, Image File Execution Options, AppInit_DLLs, AppCertDLLs) used to survive reboot or hijack execution.",
+      "severity": "High",
+      "query": "DeviceRegistryEvents\n| where RegistryKey contains \"CurrentVersion\\\\Run\" or RegistryKey contains \"Winlogon\" or RegistryKey contains \"Image File Execution\" or RegistryKey contains \"AppInit_DLL\" or RegistryKey contains \"AppCertDll\"",
+      "queryFrequency": "PT1H",
+      "queryPeriod": "PT1H",
+      "triggerOperator": "GreaterThan",
+      "triggerThreshold": 0,
+      "tactics": [
+        "Persistence"
+      ],
+      "techniques": [
+        "T1547"
+      ],
+      "sourceRule": "registry_run_key_persistence.yml"
+    }
+  ]
+}

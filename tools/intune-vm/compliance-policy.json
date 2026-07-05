@@ -1,0 +1,18 @@
+{
+  "@odata.type": "#microsoft.graph.windows10CompliancePolicy",
+  "displayName": "Homelab Windows 11 baseline",
+  "description": "Baseline compliance for lab-managed Windows endpoints: disk encryption, Defender AV active + current, firewall on, TPM + Secure Boot present, password required.",
+  "bitLockerEnabled": true,
+  "secureBootEnabled": true,
+  "tpmRequired": true,
+  "defenderEnabled": true,
+  "antivirusRequired": true,
+  "antiSpywareRequired": true,
+  "rtpEnabled": true,
+  "signatureOutOfDate": false,
+  "activeFirewallRequired": true,
+  "passwordRequired": true,
+  "passwordMinimumLength": 8,
+  "passwordRequiredType": "alphanumeric",
+  "osMinimumVersion": "10.0.22621.0"
+}

@@ -1,0 +1,81 @@
+{
+  "generatedNote": "timestamp assigned by wrapper/CI; Date APIs unavailable in some contexts",
+  "lookbackMinutes": 40,
+  "ranAtomics": false,
+  "passed": 1,
+  "total": 9,
+  "results": [
+    {
+      "rule": "powershell_encoded_or_download",
+      "technique": "T1059.001",
+      "tactic": "execution",
+      "result": "FAIL",
+      "events": 0,
+      "hasAtomic": true
+    },
+    {
+      "rule": "lolbin_network_connection",
+      "technique": "T1105",
+      "tactic": "command-and-control",
+      "result": "FAIL",
+      "events": 0,
+      "hasAtomic": true
+    },
+    {
+      "rule": "unsigned_dll_from_user_writable_path",
+      "technique": "T1055.001",
+      "tactic": "defense-evasion",
+      "result": "FAIL",
+      "events": 0,
+      "hasAtomic": true
+    },
+    {
+      "rule": "lsass_credential_access",
+      "technique": "T1003.001",
+      "tactic": "credential-access",
+      "result": "PASS",
+      "events": 2,
+      "hasAtomic": true
+    },
+    {
+      "rule": "remote_thread_injection",
+      "technique": "T1055",
+      "tactic": "defense-evasion",
+      "result": "FAIL",
+      "events": 0,
+      "hasAtomic": true
+    },
+    {
+      "rule": "registry_run_key_persistence",
+      "technique": "T1547.001",
+      "tactic": "persistence",
+      "result": "FAIL",
+      "events": 0,
+      "hasAtomic": true
+    },
+    {
+      "rule": "dns_query_suspicious_tld",
+      "technique": "T1071.004",
+      "tactic": "command-and-control",
+      "result": "FAIL",
+      "events": 0,
+      "hasAtomic": true
+    },
+    {
+      "rule": "office_browser_spawns_lolbin",
+      "technique": "T1566.001",
+      "tactic": "initial-access",
+      "result": "FAIL",
+      "events": 0,
+      "hasAtomic": true
+    },
+    {
+      "rule": "c2_named_pipe",
+      "technique": "T1071",
+      "tactic": "command-and-control",
+      "result": "FAIL",
+      "events": 0,
+      "hasAtomic": false
+    }
+  ]
+}

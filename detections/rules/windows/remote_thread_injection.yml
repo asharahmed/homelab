@@ -1,0 +1,30 @@
+title: Remote Thread Created in Sensitive System Process
+id: a1f3c0de-1009-4a09-8b09-0d2e4f6a8c09
+status: experimental
+description: >
+  Detects CreateRemoteThread targeting commonly-injected system processes
+  (lsass, winlogon, explorer, services, svchost) — a classic process-injection
+  and credential-theft primitive. Tightened from the original catch-all (which
+  fired on every remote thread) to a targeted, lower-noise set.
+references:
+  - https://attack.mitre.org/techniques/T1055/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1055/T1055.md  # tests #2 (lsass), #9
+author: homelab detection engineering (ported/refined from Wazuh rule 100530)
+date: 2026-06-29
+tags:
+  - attack.t1055
+logsource:
+  category: create_remote_thread
+  product: windows
+detection:
+  selection:
+    TargetImage|endswith:
+      - '\lsass.exe'
+      - '\winlogon.exe'
+      - '\explorer.exe'
+      - '\services.exe'
+      - '\svchost.exe'
+  condition: selection
+falsepositives:
+  - Some EDR/AV agents and legitimate injectors create remote threads into system processes
+level: high

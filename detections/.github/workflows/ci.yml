@@ -1,0 +1,50 @@
+name: detections-ci
+
+# Lint every Sigma rule and compile the Windows ruleset to Splunk SPL and
+# Microsoft Defender XDR / Sentinel KQL on every change. Lint and SPL are hard
+# gates; the KQL step is best-effort (the kusto pipeline flag may need tuning
+# on the first run for log-source categories the backend doesn't yet map).
+
+on:
+  push:
+    paths:
+      - 'rules/**'
+      - 'pipelines/**'
+      - 'requirements.txt'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    paths:
+      - 'rules/**'
+      - 'pipelines/**'
+  workflow_dispatch:
+
+jobs:
+  validate-and-convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install toolchain
+        run: pip install -r requirements.txt
+
+      - name: Lint all Sigma rules (gate)
+        run: sigma check rules/
+
+      - name: Compile Windows rules → Splunk SPL (gate)
+        run: |
+          mkdir -p build
+          sigma convert -t splunk -p sysmon rules/windows/ -o build/windows-splunk.spl
+
+      - name: Compile Windows rules → Defender XDR / Sentinel KQL (best-effort)
+        continue-on-error: true
+        run: sigma convert -t kusto -p microsoft_xdr rules/windows/ -o build/windows-sentinel.kql
+
+      - name: Upload compiled detections
+        uses: actions/upload-artifact@v4
+        with:
+          name: converted-detections
+          path: build/

@@ -1,0 +1,26 @@
+title: Interactive Exec Session in Docker Container
+id: a1f3c0de-2005-4b05-9b05-0d2e4f6a8d06
+status: experimental
+description: >
+  Detects an exec session starting inside a running container. Interactive
+  exec into a container is a common hands-on-keyboard step for inspecting or
+  pivoting from a compromised container (container administration command).
+references:
+  - https://attack.mitre.org/techniques/T1609/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1609/T1609.md  # test #2
+author: homelab detection engineering (ported from Wazuh rule 100405)
+date: 2026-06-29
+tags:
+  - attack.t1609
+# Custom JSON log source (Docker daemon events) — requires pipelines/homelab-custom.yml.
+logsource:
+  product: docker
+  service: daemon
+detection:
+  selection:
+    Type: 'container'
+    Action: 'exec_start'
+  condition: selection
+falsepositives:
+  - Operators legitimately exec'ing into containers for maintenance/debugging
+level: medium

@@ -1148,11 +1148,8 @@ footer .footer-copy {
       </g>
 
       <!-- Static service nodes on the sphere surface -->
-      <circle cx="200" cy="160" r="2.5" fill="#d19a66" opacity="0.5"/>
-      <text class="globe-label" x="208" y="158" opacity="0.5">Plex</text>
-
       <circle cx="320" cy="180" r="2" fill="#ff6369" opacity="0.4"/>
-      <text class="globe-label" x="326" y="178" opacity="0.4">Wazuh</text>
+      <text class="globe-label" x="326" y="178" opacity="0.4">Sentinel</text>
 
       <circle cx="180" cy="300" r="2" fill="#64d2ff" opacity="0.4"/>
       <text class="globe-label" x="188" y="298" opacity="0.4">Grafana</text>
@@ -1182,11 +1179,11 @@ footer .footer-copy {
     <div class="hero-inner">
       <div class="hero-eyebrow">Self-hosted &middot; Docker &middot; Windows 11</div>
       <h1>Infrastructure that runs itself.</h1>
-      <p>25+ containers orchestrated through Docker Compose on WSL2, secured behind Authelia SSO, CrowdSec, and Wazuh SIEM with live CTI feeds. Network-layer detection via Suricata IDS and netifyd DPI on the GL-BE9300 router. Internal apps use <code>*.home.aahmed.ca</code>, with selected public endpoints on dedicated hostnames.</p>
+      <p>25+ containers orchestrated through Docker Compose on WSL2, secured behind Authelia SSO, CrowdSec, and Microsoft Sentinel + Defender XDR with live threat-intel feeds. Network-layer detection via Suricata IDS and netifyd DPI on the GL-BE9300 router, with router syslog also shipped into Sentinel. Internal apps use <code>*.home.aahmed.ca</code>, with selected public endpoints on dedicated hostnames.</p>
     </div>
     <div class="stats">
       <div class="stat-item"><div class="stat-num" data-count="25" data-suffix="+">0</div><div class="stat-lbl">Containers</div></div>
-      <div class="stat-item"><div class="stat-num" data-count="30" data-suffix="K+">0</div><div class="stat-lbl">SIEM Rules</div></div>
+      <div class="stat-item"><div class="stat-num" data-count="206" data-suffix="K+">0</div><div class="stat-lbl">TI Indicators</div></div>
       <div class="stat-item"><div class="stat-num" data-count="30" data-suffix="+">0</div><div class="stat-lbl">Alert Rules</div></div>
       <div class="stat-item"><div class="stat-num" data-count="8" data-suffix="">0</div><div class="stat-lbl">Security Layers</div></div>
     </div>
@@ -1237,7 +1234,7 @@ footer .footer-copy {
         </g>
         <!-- Arrow 3 -->
         <line x1="494" y1="124" x2="528" y2="124" stroke="#6e6e73" stroke-width="1" marker-end="url(#ah)" stroke-dasharray="4 3"/>
-        <g data-tip="Authelia|Single Sign-On gateway|Passkey + biometric or TOTP + password|OIDC provider for Homarr, Grafana|auth.home.aahmed.ca">
+        <g data-tip="Authelia|Single Sign-On gateway|Passkey + biometric or TOTP + password|OIDC provider for Grafana|auth.home.aahmed.ca">
         <rect x="536" y="90" width="130" height="68" rx="12" fill="#141414" stroke="rgba(191,90,242,0.2)" stroke-width="1"/>
         <circle cx="601" cy="112" r="10" fill="rgba(191,90,242,0.12)" stroke="rgba(191,90,242,0.3)" stroke-width="0.5"/>
         <text x="601" y="116" text-anchor="middle" fill="#bf5af2" font-size="10">&#x25CF;</text>
@@ -1251,21 +1248,21 @@ footer .footer-copy {
         <rect x="708" y="60" width="192" height="128" rx="12" fill="#141414" stroke="rgba(209,154,102,0.2)" stroke-width="1"/>
         <text x="804" y="84" text-anchor="middle" fill="#d19a66" font-family="DM Mono, monospace" font-size="9" letter-spacing="0.05em">127.0.0.1</text>
         </g>
-        <g data-tip="Wazuh|SIEM + XDR platform|wazuh.home.aahmed.ca">
+        <g data-tip="CrowdSec|Intrusion Prevention System|crowdsec.home.aahmed.ca">
         <rect x="722" y="94" width="78" height="26" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
-        <text x="761" y="111" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Wazuh</text>
+        <text x="761" y="111" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">CrowdSec</text>
         </g>
-        <g data-tip="Ollama|Local LLM inference|ollama.home.aahmed.ca">
+        <g data-tip="Infisical|Secrets management|infisical.home.aahmed.ca">
         <rect x="808" y="94" width="78" height="26" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
-        <text x="847" y="111" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Ollama</text>
+        <text x="847" y="111" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Infisical</text>
         </g>
         <g data-tip="Grafana|Dashboards and visualization|Prometheus + Loki datasources|grafana.home.aahmed.ca">
         <rect x="722" y="126" width="78" height="26" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
         <text x="761" y="143" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Grafana</text>
         </g>
-        <g data-tip="Plex|Media server|:32400|plex.home.aahmed.ca">
+        <g data-tip="Uptime Kuma|Service health monitoring|uptime.home.aahmed.ca">
         <rect x="808" y="126" width="78" height="26" rx="5" fill="rgba(100,210,255,0.06)" stroke="rgba(100,210,255,0.12)" stroke-width="0.5"/>
-        <text x="847" y="143" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Plex</text>
+        <text x="847" y="143" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Uptime Kuma</text>
         </g>
         <rect x="722" y="158" width="164" height="20" rx="4" fill="rgba(255,255,255,0.02)"/>
         <text x="804" y="172" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="8">+ 20 more services</text>
@@ -1291,56 +1288,38 @@ footer .footer-copy {
 
       <div class="card rv rv-delay-1" data-glow="blue">
         <div class="card-head">
-          <div class="card-ico" style="background:var(--blue-soft);border:1px solid rgba(100,210,255,0.15)">&#x25B6;&#xFE0F;</div>
-          <h3>Media Server</h3>
+          <div class="card-ico" style="background:var(--blue-soft);border:1px solid rgba(100,210,255,0.15)">&#x1F511;</div>
+          <h3>Secrets Management</h3>
         </div>
-        <p>Plex media server for self-hosted streaming with GPU-accelerated transcoding.</p>
-        <div class="pills"><span class="pill em">Plex</span></div>
+        <p>Central store for operational secrets, with local scripts handling export and render steps for runtime config.</p>
+        <div class="pills"><span class="pill em">Infisical</span></div>
       </div>
 
       <div class="card rv rv-delay-2" data-glow="orange">
         <div class="card-head">
-          <div class="card-ico" style="background:var(--orange-soft);border:1px solid rgba(255,159,10,0.15)">&#x1F4DA;</div>
-          <h3>Media Automation</h3>
+          <div class="card-ico" style="background:var(--orange-soft);border:1px solid rgba(255,159,10,0.15)">&#x1F4CB;</div>
+          <h3>Status</h3>
         </div>
-        <p>Automated media library organization and metadata management via the *arr stack.</p>
-        <div class="pills"><span class="pill em">Radarr</span><span class="pill em">Sonarr</span><span class="pill">Readarr</span><span class="pill">Bazarr</span></div>
+        <p>Public status page tracking service and probe health.</p>
+        <div class="pills"><span class="pill em">Uptime Kuma</span></div>
       </div>
 
       <div class="card rv rv-delay-3" data-glow="accent">
         <div class="card-head">
-          <div class="card-ico" style="background:var(--accent-soft);border:1px solid var(--accent-border)">&#x1F4CB;</div>
-          <h3>Dashboards</h3>
+          <div class="card-ico" style="background:var(--accent-soft);border:1px solid var(--accent-border)">&#x1F514;</div>
+          <h3>Notifications</h3>
         </div>
-        <p>Media requests, watch history, library cleanup, and unified dashboard.</p>
-        <div class="pills"><span class="pill em">Overseerr</span><span class="pill">Requestrr</span><span class="pill">Tautulli</span><span class="pill">Homarr</span><span class="pill">Maintainerr</span></div>
+        <p>Alert and status delivery to mobile devices for both infrastructure and security events.</p>
+        <div class="pills"><span class="pill em">ntfy</span><span class="pill">Telegram</span></div>
       </div>
 
-      <div class="card rv rv-delay-4" data-glow="purple">
-        <div class="card-head">
-          <div class="card-ico" style="background:var(--purple-soft);border:1px solid rgba(191,90,242,0.15)">&#x1F9E0;</div>
-          <h3>AI / ML</h3>
-        </div>
-        <p>GPU-accelerated local LLM inference with Authelia SSO.</p>
-        <div class="pills"><span class="pill em">Ollama</span><span class="pill em">Open WebUI</span><span class="pill">NVIDIA</span></div>
-      </div>
-
-      <div class="card rv rv-delay-5" data-glow="orange">
-        <div class="card-head">
-          <div class="card-ico" style="background:var(--orange-soft);border:1px solid rgba(255,159,10,0.15)">&#x1F3AC;</div>
-          <h3>Processing</h3>
-        </div>
-        <p>GPU-accelerated media transcoding and format conversion.</p>
-        <div class="pills"><span class="pill em">FileFlows</span><span class="pill">GPU</span><span class="pill">NVIDIA</span></div>
-      </div>
-
-      <div class="card rv rv-delay-6" data-glow="green">
+      <div class="card rv rv-delay-4" data-glow="green">
         <div class="card-head">
           <div class="card-ico" style="background:var(--green-soft);border:1px solid rgba(48,209,88,0.15)">&#x1F527;</div>
-          <h3>Utilities</h3>
+          <h3>Dependency &amp; Image Hygiene</h3>
         </div>
-        <p>Quality profile sync and automated container updates.</p>
-        <div class="pills"><span class="pill">Recyclarr</span><span class="pill">Watchtower</span></div>
+        <p>Automated dependency updates, container image refresh, and vulnerability scanning.</p>
+        <div class="pills"><span class="pill em">Renovate</span><span class="pill">Watchtower</span><span class="pill">Trivy</span></div>
       </div>
 
     </div>
@@ -1378,7 +1357,7 @@ footer .footer-copy {
         <ul>
           <li><code>forward_auth</code> on every Caddy route</li>
           <li>Two-factor: passkey + biometric or TOTP</li>
-          <li>OIDC provider for Homarr, Grafana</li>
+          <li>OIDC provider for Grafana</li>
         </ul>
       </div>
 
@@ -1397,13 +1376,61 @@ footer .footer-copy {
       <div class="dcard rv">
         <div class="dcard-head">
           <div class="dcard-ico" style="background:var(--orange-soft);border:1px solid rgba(255,159,10,0.15)">&#x1F50E;</div>
-          <h3>Wazuh SIEM</h3>
+          <h3>Microsoft Sentinel</h3>
         </div>
         <ul>
-          <li>Windows agent on AsharPC �?" Sysmon + Security + FIM events</li>
-          <li>30,000+ active rules; custom rules 100500�?"100800</li>
-          <li>Syslog TCP listener on <code>:5140</code> for router alerts</li>
-          <li>OpenSearch indexer + dashboard at <code>wazuh.home.aahmed.ca</code></li>
+          <li>5 scheduled analytics rules + a router SSH brute-force rule over the native Syslog table</li>
+          <li>Deployed as code with Bicep &mdash; no click-ops</li>
+          <li>"Homelab Security Operations" workbook for triage</li>
+          <li>SOAR notification playbook (Logic App) on incident creation</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div style="height:32px"></div>
+
+    <div class="section-head rv" style="margin-bottom:28px">
+      <div class="section-tag">Cloud Security Operations</div>
+      <div class="section-title" style="font-size:1.35rem">Microsoft Security Stack</div>
+      <div class="section-desc">The self-hosted SIEM was retired in favor of the same enterprise tooling used in production security operations.</div>
+    </div>
+
+    <div class="grid-3">
+
+      <div class="dcard rv rv-delay-1">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--red-soft);border:1px solid rgba(255,99,105,0.15)">&#x1F6E1;</div>
+          <h3>Defender XDR + MDE</h3>
+        </div>
+        <ul>
+          <li>5 custom detection rules (KQL), sourced from Sigma</li>
+          <li>2-device managed fleet &mdash; Windows + macOS &mdash; onboarded to Defender for Endpoint</li>
+          <li>EDR telemetry feeds advanced hunting for both devices</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv rv-delay-2">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--purple-soft);border:1px solid rgba(191,90,242,0.15)">&#x1F4F1;</div>
+          <h3>Microsoft Intune</h3>
+        </div>
+        <ul>
+          <li>Windows + macOS compliance baselines defined as code</li>
+          <li>Attack Surface Reduction rules deployed in audit mode</li>
+          <li>macOS Defender onboarding profiles pushed via Intune</li>
+          <li>Both fleet devices report Compliant</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv rv-delay-3">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--blue-soft);border:1px solid rgba(100,210,255,0.15)">&#x2601;&#xFE0F;</div>
+          <h3>Defender for Cloud</h3>
+        </div>
+        <ul>
+          <li>Foundational cloud security posture management (CSPM)</li>
+          <li>Compliance tracked against MCSB and CIS benchmarks</li>
         </ul>
       </div>
 
@@ -1422,13 +1449,13 @@ footer .footer-copy {
       <div class="dcard rv rv-delay-1">
         <div class="dcard-head">
           <div class="dcard-ico" style="background:var(--red-soft);border:1px solid rgba(255,99,105,0.15)">&#x26A1;</div>
-          <h3>Sysmon Detection Rules</h3>
+          <h3>Defender Custom Detections</h3>
         </div>
         <ul>
-          <li>Suspicious child from Office / Browser �?" <code>T1566.001</code></li>
-          <li>Encoded / download commands �?" <code>T1059.001</code></li>
-          <li>Lsass credential access �?" <code>T1003.001</code></li>
-          <li>Remote thread injection �?" <code>T1055</code></li>
+          <li>Suspicious child from Office / Browser &mdash; <code>T1566.001</code></li>
+          <li>Encoded / download commands &mdash; <code>T1059.001</code></li>
+          <li>Lsass credential access &mdash; <code>T1003.001</code></li>
+          <li>Remote thread injection &mdash; <code>T1055</code></li>
           <li>Registry persistence &amp; C2 named pipes</li>
         </ul>
       </div>
@@ -1436,14 +1463,13 @@ footer .footer-copy {
       <div class="dcard rv rv-delay-2">
         <div class="dcard-head">
           <div class="dcard-ico" style="background:var(--purple-soft);border:1px solid rgba(191,90,242,0.15)">&#x1F9EC;</div>
-          <h3>CTI &amp; Enrichment</h3>
+          <h3>Threat Intelligence</h3>
         </div>
         <ul>
-          <li>Daily feeds: Feodo C2 IPs, URLhaus domains, MalwareBazaar hashes</li>
-          <li>CDB match rules fire at level 14�?"15 on network/FIM events</li>
-          <li>AbuseIPDB v2 enrichment �?" score, ISP, country posted to Discord</li>
-          <li>YARA active response on FIM file-create; VirusTotal hash lookup</li>
-          <li>IOC SQLite DB �?" 15-min collector; daily Discord threat hunt report</li>
+          <li>Microsoft Defender Threat Intelligence (MDTI) data connector</li>
+          <li>AlienVault OTX via TAXII</li>
+          <li>abuse.ch ThreatFox via STIX upload</li>
+          <li>~206,000 indicators feeding Sentinel analytics rules</li>
         </ul>
       </div>
 
@@ -1453,14 +1479,54 @@ footer .footer-copy {
           <h3>Suricata IDS &amp; netifyd DPI</h3>
         </div>
         <ul>
-          <li>Suricata in LXC on GL-BE9300 �?" shares host netns, sniffs <code>br-lan</code></li>
-          <li>netifyd nDPI engine �?" flow classification with <code>ndpi_risk_score</code></li>
-          <li>High-risk flows forwarded via TCP syslog to Wazuh (<code>:5140</code>)</li>
-          <li>Rule 100800 fires at level 12 with MITRE <code>T1071</code> tagging</li>
+          <li>Suricata in LXC on GL-BE9300 &mdash; shares host netns, sniffs <code>br-lan</code></li>
+          <li>netifyd nDPI engine &mdash; flow classification with <code>ndpi_risk_score</code></li>
+          <li>High-risk flows forwarded via syslog into Sentinel's native Syslog table</li>
+          <li>Router SSH brute-force rule tags matches with MITRE <code>T1110</code></li>
         </ul>
       </div>
 
     </div>
+
+    <div style="height:32px"></div>
+
+    <div class="section-head rv" style="margin-bottom:28px">
+      <div class="section-tag">Detection Engineering</div>
+      <div class="section-title" style="font-size:1.35rem">Detection-as-Code</div>
+      <div class="section-desc">Detections are source-controlled, tested, and deployed like any other code.</div>
+    </div>
+
+    <div class="grid-2">
+
+      <div class="dcard rv rv-delay-1">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--green-soft);border:1px solid rgba(48,209,88,0.15)">&#x1F5C2;&#xFE0F;</div>
+          <h3>Sigma + CI/CD</h3>
+        </div>
+        <ul>
+          <li>Sigma rules are the single source of truth for every detection</li>
+          <li>GitHub Actions: Sigma validation, rules-in-sync check, Bicep build, schema checks on every PR</li>
+          <li>OIDC deploy to Azure on merge &mdash; no stored cloud credentials</li>
+          <li>Main is branch-protected</li>
+        </ul>
+      </div>
+
+      <div class="dcard rv rv-delay-2">
+        <div class="dcard-head">
+          <div class="dcard-ico" style="background:var(--red-soft);border:1px solid rgba(255,99,105,0.15)">&#x1F9EA;</div>
+          <h3>Continuous Purple-Team Validation</h3>
+        </div>
+        <ul>
+          <li>Isolated MDE-onboarded detonation-range VM, separate from the production fleet</li>
+          <li>Validation loop runs Atomic Red Team techniques against the VM</li>
+          <li>Each run auto-confirms the matching detection fired, via advanced hunting</li>
+          <li>Emits an ATT&amp;CK Navigator coverage layer after every run</li>
+          <li>First run caught 2 custom detections that filtered on an empty field and would have never fired</li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="diagram-label rv" style="margin-top:20px;font-size:0.8rem">The validation harness caught bugs that code review couldn't: two detections keyed on the wrong field &mdash; for CreateRemoteThreadApiCall and OpenProcessApiCall the target process lives in <code>FileName</code>, not <code>AdditionalFields.TargetProcessName</code> &mdash; so they would have stayed silent forever.</div>
   </div>
 </section>
 
@@ -1502,9 +1568,9 @@ footer .footer-copy {
         <text x="90" y="91" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">windows-exporter</text>
         </g>
 
-        <g data-tip="Exportarr|Application metrics exporters|Service-specific Prometheus exporters">
+        <g data-tip="CrowdSec metrics|Application metrics exporter|Prometheus metrics on bouncer decisions">
         <rect x="20" y="108" width="140" height="30" rx="6" fill="#141414" stroke="rgba(100,210,255,0.15)" stroke-width="0.5"/>
-        <text x="90" y="127" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">Exportarr</text>
+        <text x="90" y="127" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="10">CrowdSec metrics</text>
         </g>
 
         <g data-tip="Blackbox Exporter|8 probe modules|TCP, DNS, TLS cert, ICMP, HTTP|Targets: Cloudflare, Tailscale, LAN, WAN">
@@ -1557,7 +1623,7 @@ footer .footer-copy {
         <line x1="412" y1="116" x2="476" y2="116" stroke="#ff9f0a" stroke-width="1" marker-end="url(#am-o)" opacity="0.6"/>
 
         <!-- �"?�"? GRAFANA (center-right) �"?�"? -->
-        <g data-tip="Grafana|Dashboards and visualization|System health, media stack, router, logs|Datasources: Prometheus + Loki|grafana.home.aahmed.ca">
+        <g data-tip="Grafana|Dashboards and visualization|System health, security operations, router, logs|Datasources: Prometheus + Loki|grafana.home.aahmed.ca">
         <rect x="484" y="80" width="160" height="72" rx="12" fill="#141414" stroke="rgba(209,154,102,0.25)" stroke-width="1"/>
         <text x="564" y="108" text-anchor="middle" fill="#d19a66" font-family="DM Sans, sans-serif" font-size="13" font-weight="600">Grafana</text>
         <text x="564" y="124" text-anchor="middle" fill="#6e6e73" font-family="DM Mono, monospace" font-size="9">dashboards &middot; SSO</text>
@@ -1616,7 +1682,7 @@ footer .footer-copy {
         </div>
         <ul>
           <li>20+ scrape jobs: exporters, cAdvisor, blackbox, SNMP</li>
-          <li>Alert rules: health, network, compliance, media, router</li>
+          <li>Alert rules: health, network, compliance, security, router</li>
           <li>Alertmanager routes to ntfy + Telegram</li>
         </ul>
       </div>
@@ -1627,7 +1693,7 @@ footer .footer-copy {
           <h3>Grafana</h3>
         </div>
         <ul>
-          <li>Dashboards: system health, media, router, logs</li>
+          <li>Dashboards: system health, security operations, router, logs</li>
           <li>Datasources: Prometheus + Loki</li>
           <li>SSO via Authelia at <code>grafana.home.aahmed.ca</code></li>
         </ul>
@@ -1652,8 +1718,8 @@ footer .footer-copy {
         </div>
         <ul>
           <li>TCP, DNS, TLS, ICMP, HTTP blackbox probes</li>
-          <li>Exportarr: application-specific Prometheus exporters</li>
-          <li>cAdvisor, windows-exporter, plex-exporter, Uptime Kuma</li>
+          <li>CrowdSec metrics exporter for bouncer decisions</li>
+          <li>cAdvisor, windows-exporter, Uptime Kuma</li>
         </ul>
       </div>
 
@@ -1711,9 +1777,9 @@ footer .footer-copy {
 
         <!-- Services in proxy_net -->
         <rect x="200" y="224" width="72" height="28" rx="5" fill="#141414" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
-        <text x="236" y="242" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Radarr</text>
+        <text x="236" y="242" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Infisical</text>
         <rect x="280" y="224" width="72" height="28" rx="5" fill="#141414" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
-        <text x="316" y="242" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Sonarr</text>
+        <text x="316" y="242" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">Grafana</text>
         <rect x="360" y="224" width="68" height="28" rx="5" fill="#141414" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
         <text x="394" y="242" text-anchor="middle" fill="#a1a1a6" font-family="DM Sans, sans-serif" font-size="9">+20</text>
 
@@ -1754,12 +1820,12 @@ footer .footer-copy {
       <div class="dcard rv rv-delay-1">
         <div class="dcard-head">
           <div class="dcard-ico" style="background:var(--green-soft);border:1px solid rgba(48,209,88,0.15)">&#x1F310;</div>
-          <h3>WireGuard VPN Gateway</h3>
+          <h3>Router Telemetry to Sentinel</h3>
         </div>
         <ul>
-          <li>WireGuard tunnel for privacy-sensitive services</li>
-          <li><code>network_mode: "service:gluetun"</code></li>
-          <li>VPN-routed containers isolated from host network</li>
+          <li>GL-BE9300 syslog shipped off-box to Microsoft Sentinel</li>
+          <li>Azure Monitor Logs Ingestion API into the native Syslog table</li>
+          <li>Data Collection Endpoint + Data Collection Rule defined as code</li>
         </ul>
       </div>
 
@@ -1781,9 +1847,9 @@ footer .footer-copy {
           <h3>Router IDS �?" GL-BE9300 Flint3</h3>
         </div>
         <ul>
-          <li>Suricata in LXC container �?" host netns, sniffs <code>br-lan</code> directly</li>
-          <li>netifyd nDPI daemon �?" per-flow risk scoring on all LAN traffic</li>
-          <li>High-risk DPI events �+' TCP syslog �+' Wazuh <code>:5140</code> �+' alert</li>
+          <li>Suricata in LXC container &mdash; host netns, sniffs <code>br-lan</code> directly</li>
+          <li>netifyd nDPI daemon &mdash; per-flow risk scoring on all LAN traffic</li>
+          <li>High-risk DPI events &rarr; syslog &rarr; Sentinel &rarr; analytics rule</li>
           <li>Public file access at <code>homefiles.aahmed.ca</code></li>
         </ul>
       </div>
@@ -1809,7 +1875,7 @@ footer .footer-copy {
           <li><span>$</span> validate-stack.ps1</li>
           <li><span>$</span> prepare-monitoring.ps1</li>
           <li><span>$</span> harden-rdp.ps1</li>
-          <li><span>$</span> cleanup-media-cache.ps1</li>
+          <li><span>$</span> enforce-policy.ps1</li>
           <li><span>$</span> vm-control.ps1</li>
           <li><span>$</span> cf-update-dns.ps1</li>
         </ul>
@@ -1819,11 +1885,9 @@ footer .footer-copy {
         <h3>Python</h3>
         <ul>
           <li><span>&gt;</span> add_missing_kuma_monitors.py</li>
-          <li><span>&gt;</span> plex-scan-corrupt-streams.py</li>
           <li><span>&gt;</span> telegram-bot/app.py</li>
-          <li><span>&gt;</span> update_cti_feeds.py</li>
-          <li><span>&gt;</span> ioc_collector.py</li>
-          <li><span>&gt;</span> threat_hunt_report.py</li>
+          <li><span>&gt;</span> detonation_orchestrator.py</li>
+          <li><span>&gt;</span> coverage_layer.py</li>
         </ul>
       </div>
 
@@ -1831,11 +1895,9 @@ footer .footer-copy {
         <h3>Scheduled</h3>
         <ul>
           <li><span>&#x23F0;</span> Watchtower &mdash; daily 4 AM</li>
-          <li><span>&#x23F0;</span> Recyclarr &mdash; TRaSH sync</li>
-          <li><span>&#x23F0;</span> Cleanup &mdash; stale cache files</li>
-          <li><span>&#x23F0;</span> CTI feeds &mdash; daily 03:00 UTC</li>
-          <li><span>&#x23F0;</span> IOC collector &mdash; every 15 min</li>
-          <li><span>&#x23F0;</span> Threat hunt report &mdash; daily 07:00 UTC</li>
+          <li><span>&#x23F0;</span> Certificate renewal check &mdash; daily</li>
+          <li><span>&#x23F0;</span> Purple-team validation run &mdash; against detonation VM</li>
+          <li><span>&#x23F0;</span> ATT&amp;CK coverage layer &mdash; regenerated per run</li>
         </ul>
       </div>
 
@@ -1859,7 +1921,7 @@ footer .footer-copy {
       </div>
       <div class="infra-cell">
         <div class="lbl">GPU</div>
-        <div class="val">NVIDIA<br>Transcoding &amp; LLM</div>
+        <div class="val">NVIDIA<br>GPU acceleration</div>
       </div>
       <div class="infra-cell">
         <div class="lbl">Remote</div>
@@ -1889,10 +1951,11 @@ footer .footer-copy {
       <span class="pill">Loki</span>
       <span class="pill">Authelia</span>
       <span class="pill">CrowdSec</span>
-      <span class="pill">Wazuh</span>
+      <span class="pill">Sentinel</span>
+      <span class="pill">Defender XDR</span>
+      <span class="pill">Intune</span>
       <span class="pill">Suricata</span>
       <span class="pill">Tailscale</span>
-      <span class="pill">Plex</span>
     </div>
     <div class="footer-links">
       <a href="https://github.com/asharahmed" target="_blank" rel="noopener noreferrer">

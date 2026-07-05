@@ -1,0 +1,46 @@
+title: Authelia Failed First-Factor Authentication
+id: a1f3c0de-2002-4b02-9b02-0d2e4f6a8d02
+name: authelia_failed_1fa
+status: experimental
+description: Detects a single failed first-factor (password) authentication in Authelia.
+references:
+  - https://attack.mitre.org/techniques/T1110/
+author: homelab detection engineering (ported from Wazuh rule 100310)
+date: 2026-06-29
+tags:
+  - attack.t1110
+# Custom JSON log source — requires pipelines/homelab-custom.yml for field mapping.
+logsource:
+  product: authelia
+  service: authentication
+detection:
+  selection:
+    level: 'warn'
+    msg|contains: 'Unsuccessful 1FA authentication attempt'
+  condition: selection
+falsepositives:
+  - Users mistyping their password
+level: medium
+---
+title: Authelia First-Factor Brute Force
+id: a1f3c0de-2002-4b02-9b02-0d2e4f6a8d03
+status: experimental
+description: >
+  Detects 5 or more failed first-factor authentication attempts from the same
+  source within 5 minutes — password brute force / credential stuffing.
+references:
+  - https://attack.mitre.org/techniques/T1110/001/
+author: homelab detection engineering (ported from Wazuh rule 100311)
+date: 2026-06-29
+tags:
+  - attack.t1110.001
+correlation:
+  type: event_count
+  rules:
+    - authelia_failed_1fa
+  group-by:
+    - remote_ip
+  timespan: 5m
+  condition:
+    gte: 5
+level: high

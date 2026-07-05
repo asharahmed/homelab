@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "$connections": { "defaultValue": {}, "type": "Object" },
+    "telegramBotToken": { "defaultValue": "", "type": "SecureString" },
+    "telegramChatId":   { "defaultValue": "", "type": "String" },
+    "ntfyTopicUrl":     { "defaultValue": "", "type": "String" }
+  },
+  "triggers": {
+    "Microsoft_Sentinel_incident": {
+      "type": "ApiConnectionWebhook",
+      "inputs": {
+        "host": {
+          "connection": {
+            "name": "@parameters('$connections')['azuresentinel']['connectionId']"
+          }
+        },
+        "body": { "callback_url": "@{listCallbackUrl()}" },
+        "path": "/incident-creation"
+      }
+    }
+  },
+  "actions": {
+    "Add_comment": {
+      "type": "ApiConnection",
+      "runAfter": {},
+      "inputs": {
+        "host": {
+          "connection": {
+            "name": "@parameters('$connections')['azuresentinel']['connectionId']"
+          }
+        },
+        "method": "post",
+        "path": "/Incidents/Comment",
+        "body": {
+          "incidentArmId": "@triggerBody()?['object']?['id']",
+          "message": "Notification dispatched to Telegram and ntfy by sentinel-notify-playbook."
+        }
+      }
+    },
+    "Send_Telegram": {
+      "type": "Http",
+      "runAfter": { "Add_comment": ["Succeeded", "Failed"] },
+      "inputs": {
+        "method": "POST",
+        "uri": "@{concat('https://api.telegram.org/bot', parameters('telegramBotToken'), '/sendMessage')}",
+        "headers": { "Content-Type": "application/json" },
+        "body": {
+          "chat_id": "@parameters('telegramChatId')",
+          "text": "@{concat('Sentinel ', triggerBody()?['object']?['properties']?['severity'], ': ', triggerBody()?['object']?['properties']?['title'], ' | Status: ', triggerBody()?['object']?['properties']?['status'], if(empty(triggerBody()?['object']?['properties']?['incidentUrl']), '', concat(' | ', triggerBody()?['object']?['properties']?['incidentUrl'])))}"
+        }
+      }
+    },
+    "Send_ntfy": {
+      "type": "Http",
+      "runAfter": { "Add_comment": ["Succeeded", "Failed"] },
+      "inputs": {
+        "method": "POST",
+        "uri": "@parameters('ntfyTopicUrl')",
+        "headers": {
+          "Content-Type": "text/plain",
+          "Title": "@{concat(triggerBody()?['object']?['properties']?['severity'], ': ', triggerBody()?['object']?['properties']?['title'])}",
+          "Priority": "high",
+          "Tags": "rotating_light,shield"
+        },
+        "body": "@{concat('Status: ', triggerBody()?['object']?['properties']?['status'], if(empty(triggerBody()?['object']?['properties']?['incidentUrl']), '', concat('\n', triggerBody()?['object']?['properties']?['incidentUrl'])))}"
+      }
+    }
+  },
+  "outputs": {}
+}

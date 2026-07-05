@@ -12,19 +12,33 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["docker-compose", "dockerfile"],
+      "matchManagers": [
+        "docker-compose",
+        "dockerfile"
+      ],
       "groupName": "monitoring stack",
-      "matchPackagePatterns": ["prometheus", "grafana", "loki", "promtail", "blackbox", "alertmanager"]
+      "matchPackagePatterns": [
+        "prometheus",
+        "grafana",
+        "loki",
+        "promtail",
+        "blackbox",
+        "alertmanager"
+      ]
     },
     {
-      "matchManagers": ["docker-compose", "dockerfile"],
+      "matchManagers": [
+        "docker-compose",
+        "dockerfile"
+      ],
       "groupName": "security stack",
-      "matchPackagePatterns": ["wazuh", "crowdsec", "infisical", "postgres", "redis"]
-    },
-    {
-      "matchManagers": ["docker-compose", "dockerfile"],
-      "groupName": "media stack",
-      "matchPackagePatterns": ["plex", "radarr", "sonarr", "readarr", "bazarr", "maintainerr"]
+      "matchPackagePatterns": [
+        "wazuh",
+        "crowdsec",
+        "infisical",
+        "postgres",
+        "redis"
+      ]
     }
   ],
   "prHourlyLimit": 2,

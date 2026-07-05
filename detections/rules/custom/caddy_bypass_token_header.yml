@@ -1,0 +1,25 @@
+title: Authelia Bypass-Token Header Observed at Reverse Proxy
+id: a1f3c0de-2009-4b09-9b09-0d2e4f6a8d0d
+status: experimental
+description: >
+  Detects requests carrying the X-Bypass-Token header through Caddy. This
+  header bypasses Authelia SSO and should only ever originate from a small set
+  of approved automation (e.g. blackbox monitoring). Its presence on an
+  unexpected request indicates authentication-bypass abuse or a leaked token.
+references:
+  - https://attack.mitre.org/techniques/T1078/
+author: homelab detection engineering (ported from Wazuh rule 100205)
+date: 2026-06-29
+tags:
+  - attack.t1078
+# Custom JSON log source — requires pipelines/homelab-custom.yml; maps the request
+# header into a queryable field (cs-bypass-token).
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-bypass-token|exists: true
+  condition: selection
+falsepositives:
+  - Approved monitoring/automation that legitimately presents the bypass token
+level: high

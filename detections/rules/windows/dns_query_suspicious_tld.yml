@@ -1,0 +1,31 @@
+title: DNS Query to Suspicious Top-Level Domain
+id: a1f3c0de-1008-4a08-bb08-0d2e4f6a8c08
+status: experimental
+description: >
+  Detects DNS queries to top-level domains disproportionately associated with
+  malware C2 and abuse (.ru, .cn, .tk, .xyz, .top, .pw, .cc). Low-fidelity on
+  its own — intended for correlation and hunting, not standalone alerting.
+references:
+  - https://attack.mitre.org/techniques/T1071/004/
+  - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1071.004/T1071.004.md  # test #1 (set domain to a suspicious TLD)
+author: homelab detection engineering (ported from Wazuh rule 100580)
+date: 2026-06-29
+tags:
+  - attack.t1071.004
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection:
+    QueryName|endswith:
+      - '.ru'
+      - '.cn'
+      - '.tk'
+      - '.xyz'
+      - '.top'
+      - '.pw'
+      - '.cc'
+  condition: selection
+falsepositives:
+  - Many legitimate sites use these TLDs; expect high benign volume
+level: low
